@@ -1,0 +1,14 @@
+{
+  "pages": [
+    "pages/booklist/booklist",
+    "pages/content/content",
+    "pages/select/select"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "阅读",
+    "navigationBarTextStyle": "black"
+  },
+  "debug": true
+}
