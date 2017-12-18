@@ -17,8 +17,6 @@ Page({
       that.setData({
         booklist:res.data.objects
       })
-      //等书籍列表返回并重置成功后调用
-      this.getCategoryIDList()
     }, (res) => {
       //error
     }

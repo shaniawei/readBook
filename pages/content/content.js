@@ -19,10 +19,10 @@ Page({
       this.setData({
         chapterList: res.data.objects
       });
-      wx.setStorage({
-        key: "chapterList",
-        data: res.data.objects
-      })
+      // wx.setStorage({
+      //   key: "chapterList",
+      //   data: res.data.objects
+      // })
       this.getDetail(this.data.chapterList[0].id,0)
     }, (err) => {
       // err
@@ -126,7 +126,7 @@ Page({
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () {
+  onUnload: function () {   //历史记录
     var index=this.data.detail.index-1
     console.log(index)
     wx.setStorage({
