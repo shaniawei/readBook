@@ -4,110 +4,8 @@ Page({
    * 页面的初始数据
    */
   data: {
-    mcq:[
-      {
-        id:'guguo',
-        question:'以下那些属于四大文明古国？',
-        select:[
-          {
-            name: '古埃及',
-            value:0,
-          },
-          {
-            name: '古罗马',
-            value: 1,
-          },
-          {
-            name: '古印度',
-            value: 2,
-          },
-          {
-            name: '古巴比伦',
-            value: 3,
-          }
-        ],
-        score:20,
-        current:'023',
-        beenselected: 0
-      },
-      {
-        id:'yuan',
-        question: '从猿到人的进化过程可为三个阶段：',
-        select: [
-          {
-            name: '“正在形成中的人”',
-            value: 0,
-          },
-          {
-            name: '早期智人',
-            value: 1,
-          },
-          {
-            name: '猿人',
-            value: 2,
-          },
-          {
-            name: '猿',
-            value: 3,
-          }
-        ],
-        score: 20,
-        current:'0123',
-        beenselected: 0
-      }
-    ],
-    sc:[
-      {
-        id:'huangdi',
-        question: '明朝在位时间最长的皇帝是哪位？',
-        select: [
-          {
-            name: '朱元璋',
-            value: 0,
-          },
-          {
-            name: '朱棣',
-            value: 1,
-          },
-          {
-            name: '朱翊钧',
-            value: 2,
-          },
-          {
-            name: '朱瞻基',
-            value: 3,
-          }
-        ],
-        score: 10,
-        current:2,
-        beenselected: 0
-      },
-      {
-        id:'huoyao',
-        question: '火药始用于军事上是在什么时候？',
-        select: [
-          {
-            name: '清朝',
-            value: 0,
-          },
-          {
-            name: '西汉',
-            value: 1,
-          },
-          {
-            name: '明朝',
-            value: 2,
-          },
-          {
-            name: '唐朝末年',
-            value: 3,
-          }
-        ],
-        score: 10,
-        current: 3,
-        beenselected:0
-      }
-    ],
+    mcq:[],   //多选
+    sc:[],    //单选
     totlaScore:0
   },
   applyBtn:function(){
@@ -124,7 +22,8 @@ Page({
     _this.data.totlaScore = _this.data.totlaScore.toString()
     wx.showModal({
       title: '您的总分数是',
-      content: _this.data.totlaScore
+      content: _this.data.totlaScore,
+      showCancel:false
     })
   },
   radioChange: function (e) {
@@ -153,7 +52,40 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    
+    var richTextID = options.richTextID  //章节id
+    var that = this;                     //获取page实例
+    // 实例化查询对象
+    var query = new wx.BaaS.Query()
+    //查询条件
+    query.contains('richTextID', richTextID)
+
+    var tableID = 4059
+    var Product = new wx.BaaS.TableObject(tableID)
+    Product.setQuery(query).find().then((res) => {
+      //success
+      console.log(res.data.objects)
+
+      var path = res.data.objects[0].path.cdn_path;  //文件路径
+      wx.request({
+        url: 'https://cloud-minapp-8044.cloud.ifanrusercontent.com/'+path, 
+        header: {
+          'content-type': 'application/json'
+        },
+        success: function (res) {
+          console.log(res.data)
+
+          that.setData({
+            mcq:res.data.mcq,
+            sc:res.data.sc
+          })
+          console.log(that.data.mcq)
+          console.log(that.data.sc)
+        }
+      })
+    }, (res) => {
+      //error
+    }
+    )
   },
 
   /**

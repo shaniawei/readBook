@@ -1,3 +1,6 @@
+.main-select{
+  min-height: 800rpx;
+}
 .con{
   padding: 20rpx;
 }

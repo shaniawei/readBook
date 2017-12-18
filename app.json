@@ -1,8 +1,8 @@
 {
   "pages": [
     "pages/booklist/booklist",
-    "pages/content/content",
-    "pages/select/select"
+    "pages/select/select",
+    "pages/content/content"
   ],
   "window": {
     "backgroundTextStyle": "light",

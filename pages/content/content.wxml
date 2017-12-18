@@ -1,8 +1,15 @@
 <import src="../../wxParser/index.wxml"/>
-<view class='title'>第{{ detail.index }}章</view>
-<view class='title'>{{ detail.title }}</view>
-<view class="wxParser detail">
-  <template is="wxParser" data="{{wxParserData:richText.nodes}}"/>
+<view wx:if="{{ noOrYes }}">
+  <view class='title'>第{{ detail.index }}章</view>
+  <view class='title'>{{ detail.title }}</view>
+  <view class="wxParser detail">
+    <template is="wxParser" data="{{wxParserData:richText.nodes}}"/>
+  </view>
+  <navigator url='../select/select?richTextID={{ detail.richTextID }}' open-type='navigate' hover-class='none'>
+    <button type='warn' class='toSelect'>练习</button>
+  </navigator>
+  <view class='nextOrPre'>
+    <button type='primary' size='mini' data-index='{{ detail.index-1 }}' bindtap='getPreChapter'>上一章</button>
+    <button type='primary' size='mini' data-index='{{ detail.index-1 }}' bindtap='getNextChapter'>下一章</button>
+  </view>
 </view>
-<button type='primary' size='mini' data-index='{{ detail.index-1 }}' bindtap='getPreChapter'>上一章</button>
-<button type='primary' size='mini' data-index='{{ detail.index-1 }}' bindtap='getNextChapter'>下一章</button>

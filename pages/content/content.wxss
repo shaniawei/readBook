@@ -1,7 +1,23 @@
 .detail{
   padding: 0 20rpx;
+  min-height: 1200rpx;
 }
 .title{
   text-align: center;
   margin-bottom: 40rpx;
+}
+
+.toSelect{
+  border-radius: 50%;
+  width:150rpx;
+  height:150rpx;
+  line-height:150rpx;
+  margin-bottom: 30rpx;
+}
+
+.nextOrPre{
+  width: 60%;
+  margin: 0 auto 40rpx;
+  display: flex;
+  justify-content: space-around;
 }

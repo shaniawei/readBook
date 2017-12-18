@@ -7,7 +7,8 @@ Page({
   data: {
     CategoryID:'',
     chapterList:[],
-    detail:{}
+    detail:{},
+    noOrYes:false
   },
   //获取CategoryID类里的内容列表
   getChapter: function (id) {
@@ -18,6 +19,10 @@ Page({
       this.setData({
         chapterList: res.data.objects
       });
+      wx.setStorage({
+        key: "chapterList",
+        data: res.data.objects
+      })
       this.getDetail(this.data.chapterList[0].id,0)
     }, (err) => {
       // err
@@ -35,8 +40,10 @@ Page({
         detail:{
           title:res.data.title,
           content:res.data.content,
-          index:index+1
-        }
+          index:index+1,
+          richTextID: richTextID
+        },
+        noOrYes:true
       })
       //渲染富文本
       wxParser.parse({
@@ -120,7 +127,12 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-    
+    var index=this.data.detail.index-1
+    console.log(index)
+    wx.setStorage({
+      key: "index",
+      data: index
+    })
   },
 
   /**
