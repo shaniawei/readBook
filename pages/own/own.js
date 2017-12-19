@@ -4,33 +4,14 @@ Page({
    * 页面的初始数据
    */
   data: {
-    booklist:[]
+    
   },
-  // 获取书籍列表
-  getBookList:function(){
-    var that=this;
-    let tableID = 3974
-    var Product = new wx.BaaS.TableObject(tableID)
-    Product.find().then((res) => {
-      //获取数据表的书籍列表 success    
-      that.setData({
-        booklist:res.data.objects
-      })
-    }, (res) => {
-      //error
-    }
-    )
-  },
+
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    var that=this;
-    wx.getUserInfo({
-      success: function (res) {
-        that.getBookList();
-      }
-    })
+    
   },
 
   /**
@@ -44,6 +25,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    
   },
 
   /**

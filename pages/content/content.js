@@ -8,22 +8,20 @@ Page({
     CategoryID:'',
     chapterList:[],
     detail:{},
-    noOrYes:false
+    noOrYes:false,
+    index:0
   },
   //获取CategoryID类里的内容列表
   getChapter: function (id) {
+    var that = this;
     let categoryID = id;
     let objects = { categoryID };
     wx.BaaS.getContentList(objects).then((res) => {
       // success
-      this.setData({
+      that.setData({
         chapterList: res.data.objects
       });
-      // wx.setStorage({
-      //   key: "chapterList",
-      //   data: res.data.objects
-      // })
-      this.getDetail(this.data.chapterList[0].id,0)
+      that.getDetail(that.data.chapterList[that.data.index].id, that.data.index)
     }, (err) => {
       // err
     });
@@ -36,14 +34,13 @@ Page({
     wx.BaaS.getContent(objects).then((res) => {
       // success
       console.log(res.data)
-      this.setData({
+      that.setData({
         detail:{
           title:res.data.title,
           content:res.data.content,
           index:index+1,
           richTextID: richTextID
-        },
-        noOrYes:true
+        }
       })
       //渲染富文本
       wxParser.parse({
@@ -51,56 +48,80 @@ Page({
         html: that.data.detail.content,
         target: that
       });
+      //文本显示
+      that.setData({
+        noOrYes: true
+      })
     }, (err) => {
       // err
     });
   },
-  //获取下一章
-  getNextChapter:function(e){
+  //获取上一章下一章
+  getonechapter:function(e){
+    var flag = e.currentTarget.dataset.flag;       //获取上一章还是下一章的标志
     var nowIndex = e.currentTarget.dataset.index;  //现在看的是第几章
-    var nextIndex = nowIndex + 1
-    if (nextIndex >= this.data.chapterList.length){
-      wx.showToast({
-        title: '没有下一章',
-        icon: '',
-        duration: 2000
-      })
-    }else{
-      var nextRichTextID = this.data.chapterList[nextIndex].id;
-      this.getDetail(nextRichTextID, nextIndex);
-      wx.pageScrollTo({
-        scrollTop: 0,
-      })
+    var newIndex
+    if (flag=='1'){  //下一章
+      newIndex = nowIndex + 1;
+      if (newIndex >= this.data.chapterList.length) {
+        wx.showToast({
+          title: '没有下一章',
+          icon: '',
+          duration: 2000
+        })
+        return
+      }
+    } else if (flag=='-1'){  //上一章
+      newIndex = nowIndex - 1;
+      if (newIndex < 0) {
+        wx.showToast({
+          title: '没有上一章',
+          icon: '',
+          duration: 2000
+        })
+        return
+      }
     }
-    
-  },
-  //获取上一章
-  getPreChapter: function (e) {
-    var nowIndex = e.currentTarget.dataset.index;  //现在看的是第几章
-    var preIndex = nowIndex - 1
-    if (preIndex < 0){
-      wx.showToast({
-        title: '没有上一章',
-        icon: '',
-        duration: 2000
-      })
-    }else{
-      var nextRichTextID = this.data.chapterList[preIndex].id;
-      this.getDetail(nextRichTextID, preIndex)
-      wx.pageScrollTo({
-        scrollTop: 0,
-      })
-    }
-    
+    var newRichTextID = this.data.chapterList[newIndex].id;
+    this.getDetail(newRichTextID, newIndex);
+    wx.pageScrollTo({
+      scrollTop: 0,
+    })
+
   },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    this.setData({
-      CategoryID: options.CategoryID
+    var that=this;
+    var CategoryID = options.CategoryID
+    that.setData({
+      CategoryID: CategoryID
     })
-    this.getChapter(this.data.CategoryID)
+
+    // 实例化查询对象
+    var query = new wx.BaaS.Query()
+    //查询条件
+    query.contains('CategoryID', CategoryID)
+    var tableID = 4080
+    var Product = new wx.BaaS.TableObject(tableID)
+    Product.setQuery(query).find().then((res) => {
+      //success
+      console.log(res.data.objects)
+      if (res.data.objects.length == 0) {  //没看过这本书
+
+      }else{
+        var index = parseInt(res.data.objects[0].index)   //看过 获取上一次离开的章节 索引
+        that.setData({
+          index: index
+        })
+      }
+      that.getChapter(that.data.CategoryID)
+    }, (res) => {
+      //error 
+    }
+    )
+    
   }, 
   /**
    * 生命周期函数--监听页面初次渲染完成
@@ -126,12 +147,44 @@ Page({
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () {   //历史记录
-    var index=this.data.detail.index-1
+  onUnload: function () {   //离开的时候看的是哪本书哪一章 记录下来
+    var index=this.data.detail.index-1  //哪一页
     console.log(index)
-    wx.setStorage({
-      key: "index",
-      data: index
+    var CategoryID = this.data.CategoryID //哪本书
+    let tableID = 4080
+    //首先查询这个CategoryID是否在数据表里有记录 如果有的话直接更新index数据
+    let Product = new wx.BaaS.TableObject(tableID)
+    // 实例化查询对象
+    var query = new wx.BaaS.Query()
+    // 设置查询条件（比较、字符串包含、组合等）
+    query.contains('CategoryID', CategoryID)
+    Product.setQuery(query).find().then((res) => {
+      // success
+      if (res.data.objects.length == 0) {  //数据表里没有CategoryID这条数据 需要新增一条
+        let product = Product.create()
+        let history = {
+          index: index.toString(),
+          CategoryID: CategoryID
+        }
+        product.set(history).save().then((res) => {
+          // success
+          console.log(res)
+        }, (err) => {
+          // err
+        })
+      } else {   //数据表里有CategoryID这条数据 需要更新
+        let product = Product.getWithoutData(res.data.objects[0].id)
+        product.set('index', index.toString())
+        product.update().then((res) => {
+          // success
+          console.log(res)
+        }, (err) => {
+          // err
+        })
+      }
+      
+    }, (err) => {
+        // err
     })
   },
 

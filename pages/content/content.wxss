@@ -1,6 +1,5 @@
 .detail{
   padding: 0 20rpx;
-  min-height: 1200rpx;
 }
 .title{
   text-align: center;

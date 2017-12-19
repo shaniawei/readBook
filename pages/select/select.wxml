@@ -1,4 +1,4 @@
-<view class='main-select'>
+<view class='main-select' wx:if='{{ noOrYes }}'>
   <view class='con'>
     <view class='type'>
       单选题
@@ -27,5 +27,5 @@
       </checkbox-group>
     </view>
   </view>
+  <button type='primary' class='apply-btn' bindtap='applyBtn'>提交</button>
 </view>
-<button type='primary' class='apply-btn' bindtap='applyBtn'>提交</button>

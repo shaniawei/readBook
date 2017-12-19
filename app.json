@@ -10,5 +10,18 @@
     "navigationBarTitleText": "阅读",
     "navigationBarTextStyle": "black"
   },
+  "tabBar": {
+    "borderStyle":"white",
+    "list": [
+      {
+        "pagePath": "pages/booklist/booklist",
+        "text": "书城"
+      },
+      {
+        "pagePath": "pages/own/own",
+        "text": "个人中心"
+      }
+    ]
+  },
   "debug": true
 }

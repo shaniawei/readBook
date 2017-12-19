@@ -6,7 +6,8 @@ Page({
   data: {
     mcq:[],   //多选
     sc:[],    //单选
-    totlaScore:0
+    totlaScore:0,
+    noOrYes: false
   },
   applyBtn:function(){
     var _this=this;
@@ -76,7 +77,8 @@ Page({
 
           that.setData({
             mcq:res.data.mcq,
-            sc:res.data.sc
+            sc:res.data.sc,
+            noOrYes:true
           })
           console.log(that.data.mcq)
           console.log(that.data.sc)
