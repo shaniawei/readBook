@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/bookcase/bookcase",
     "pages/booklist/booklist",
     "pages/select/select",
     "pages/content/content"
@@ -14,12 +15,16 @@
     "borderStyle":"white",
     "list": [
       {
-        "pagePath": "pages/booklist/booklist",
-        "text": "书城"
+        "pagePath": "pages/bookcase/bookcase",
+        "text": "书架"
       },
       {
         "pagePath": "pages/own/own",
         "text": "个人中心"
+      },
+      {
+        "pagePath": "pages/booklist/booklist",
+        "text": "书城"
       }
     ]
   },
