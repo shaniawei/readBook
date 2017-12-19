@@ -1,8 +1,9 @@
 {
   "pages": [
     "pages/bookcase/bookcase",
-    "pages/booklist/booklist",
     "pages/select/select",
+    "pages/booklist/booklist",
+    
     "pages/content/content"
   ],
   "window": {
