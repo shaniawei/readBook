@@ -9,3 +9,15 @@ image{
   height: 400rpx;
   display: block;
 }
+
+.typeTitle::after{
+  content: ".";
+  display: block;
+  line-height: 0;
+  clear: both;
+  visibility: hidden;
+}
+.typeTitle{
+  margin-bottom: 40rpx;
+  border-bottom: 1px solid #ddd;
+}

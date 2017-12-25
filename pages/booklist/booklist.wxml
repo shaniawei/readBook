@@ -1,6 +1,3 @@
-<view class='bookItem' wx:for='{{ booklist }}' id='{{ item.CategoryID }}'>
-  <navigator url='../content/content?CategoryID={{ item.CategoryID }}' open-type='navigate' hover-class='none'>
-    <image src='{{item.img}}'></image>
-    <text>{{item.bookName}}</text>
-  </navigator>
-</view>
+<import src='../../resource/booklist.wxml' />
+<template is='booklist' data='{{ typeTitle:"军事历史",booklistdata:booklist1,type:"1" }}' wx:if='{{ dataLoadFinish }}' />
+<template is='booklist' data='{{ typeTitle:"畅销小说",booklistdata:booklist2,type:"2" }}' wx:if='{{ dataLoadFinish }}' />

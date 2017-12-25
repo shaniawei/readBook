@@ -11,12 +11,11 @@
   width:150rpx;
   height:150rpx;
   line-height:150rpx;
-  margin-bottom: 30rpx;
 }
 
 .nextOrPre{
   width: 60%;
-  margin: 0 auto 40rpx;
+  margin: 40rpx auto 40rpx;
   display: flex;
   justify-content: space-around;
 }

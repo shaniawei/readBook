@@ -9,7 +9,8 @@ Page({
     chapterList:[],
     detail:{},
     noOrYes:false,
-    index:0
+    index:0,
+    showSelect:false
   },
   //获取CategoryID类里的内容列表
   getChapter: function (id) {
@@ -94,11 +95,14 @@ Page({
    */
   onLoad: function (options) {
     var that=this;
-    var CategoryID = options.CategoryID
+    var CategoryID = options.CategoryID;
+    var showSelect = options.showSelect.indexOf('false')>-1?false:true  //是否显示选择题跳转按钮标记
+    console.log(showSelect)
+    console.log(typeof showSelect)
     that.setData({
-      CategoryID: CategoryID
+      CategoryID: CategoryID,
+      showSelect: showSelect
     })
-
     // 实例化查询对象
     var query = new wx.BaaS.Query()
     //查询条件

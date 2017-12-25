@@ -1,0 +1,14 @@
+<navigator open-type='navigate' url='' hover-class='none'>
+  <button type='primary'>每月3本书计划</button>
+</navigator>
+
+<navigator open-type='navigate' url='' hover-class='none'>
+  <button type='primary'>100日读书计划</button>
+</navigator>
+
+<navigator open-type='navigate' url='' hover-class='none'>
+  <button type='primary'>自助计划自定</button>
+</navigator>
+
+
+

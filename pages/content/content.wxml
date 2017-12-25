@@ -5,10 +5,12 @@
   <view class="wxParser detail">
     <template is="wxParser" data="{{wxParserData:richText.nodes}}"/>
   </view>
-  <navigator url='../select/select?richTextID={{ detail.richTextID }}' open-type='navigate' hover-class='none'>
+  <view wx:if="{{ showSelect }}">
+    <navigator url='../select/select?richTextID={{ detail.richTextID }}' open-type='navigate' hover-class='none'>
     <button type='warn' class='toSelect'>练习</button>
   </navigator>
-  <view class='nextOrPre'>
+  </view>
+  <view class='nextOrPre' >
     <button type='primary' size='mini' data-index='{{ detail.index-1 }}' data-flag='-1' bindtap='getonechapter'>上一章</button>
     <button type='primary' size='mini' data-index='{{ detail.index-1 }}' data-flag='1' bindtap='getonechapter'>下一章</button>
   </view>

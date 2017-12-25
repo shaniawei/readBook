@@ -1,0 +1,61 @@
+<view class='cue'>
+  <view class='item'>
+    <text class='markColor m1'></text>
+    <text class='txt'>未读</text>
+  </view>
+  <view class='item'>
+    <text class='markColor m2'></text>
+    <text class='txt'>补读</text>
+  </view>
+  <view class='item'>
+    <text class='markColor m3'></text>
+    <text class='txt'>当日已读</text>
+  </view>
+</view>
+<!--日历start  -->
+<view class="flex box box-tb box-align-center" bindtouchstart="touchStart" bindtouchmove="touchMove" bindtouchend="touchEnd">
+  <view class="calendar pink-color box box-tb">
+        <view class="top-handle fs28 box box-lr box-align-center box-pack-center">
+            <!--上一月  -->
+            <view class="prev box box-rl" bindtap="handleCalendar" data-handle="prev">
+                <view class="prev-handle box box-lr box-align-center box-pack-center">《</view>
+            </view>
+
+            <!--当前月份  -->
+            <picker class="date-area box box-lr box-align-center box-pack-center" mode="date" start="{{ startDate }}" end="{{ endDate }}" fields="month" value="{{ cur_year }}-{{ cur_month }}" bindchange="bindDateChange">
+                <view class="picker">{{cur_year || "--"}} 年 {{cur_month || "--"}} 月</view>
+            </picker>
+
+            <!--下一月  -->
+            <view class="next box box-lr" bindtap="handleCalendar" data-handle="next">
+                <view class="next-handle box box-lr box-align-center box-pack-center">》</view>
+            </view>
+
+        </view>
+
+        <!--星期  -->
+        <view class="weeks box box-lr box-pack-center box-align-center">
+            <view class="flex week fs28" wx:for="{{weeks_ch}}" wx:key="{{index}}" data-idx="{{index}}">{{item}}</view>
+        </view>
+
+        <view class="days box box-lr box-wrap">
+
+            <view wx:if="{{hasEmptyGrid}}" class="grid white-color box box-align-center box-pack-center" wx:for="{{empytGrids}}" wx:key="{{index}}" data-idx="{{index}}">
+            </view>
+
+            <view class="grid white-color box box-align-center box-pack-center" wx:for="{{days}}" wx:key="{{index}}" data-idx="{{index}}">
+                <view class="day {{item.choosed ? 'border-radius pink-bg' : ''}} box box-align-center box-pack-center">{{item.day}}</view>
+            </view>
+
+        </view>
+    </view>
+</view>
+<!--日历end  -->
+<navigator open-type='navigate' url='../study_plan/study_plan' hover-class='none'>
+  <button type='primary'>我的学习计划</button>
+</navigator>
+
+<navigator open-type='navigate' url='../today_read/today_read' hover-class='none'>
+  <button type='primary'>今日阅读内容</button>
+</navigator>
+

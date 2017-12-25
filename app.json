@@ -1,9 +1,11 @@
 {
   "pages": [
+    "pages/own/own",
+    "pages/booklist/booklist",
+    "pages/today_read/today_read",
+    "pages/study_plan/study_plan",
     "pages/bookcase/bookcase",
     "pages/select/select",
-    "pages/booklist/booklist",
-    
     "pages/content/content"
   ],
   "window": {
@@ -21,7 +23,7 @@
       },
       {
         "pagePath": "pages/own/own",
-        "text": "个人中心"
+        "text": "我的阅读"
       },
       {
         "pagePath": "pages/booklist/booklist",
