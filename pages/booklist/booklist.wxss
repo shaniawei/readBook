@@ -20,4 +20,16 @@ image{
 .typeTitle{
   margin-bottom: 40rpx;
   border-bottom: 1px solid #ddd;
+  
+}
+.showBookList{
+  animation: showBooklist 3s ;
+}
+@keyframes showBooklist{
+  from{
+    height: 0;
+  }
+  to{
+    height: auto;
+  }
 }

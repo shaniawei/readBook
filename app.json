@@ -1,7 +1,8 @@
 {
   "pages": [
-    "pages/own/own",
     "pages/booklist/booklist",
+    "pages/own/own",
+    
     "pages/today_read/today_read",
     "pages/study_plan/study_plan",
     "pages/bookcase/bookcase",

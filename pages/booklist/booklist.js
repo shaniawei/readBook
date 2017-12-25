@@ -7,9 +7,15 @@ Page({
     booklist1:[],
     booklist2: [],
     dataLoadFinish:false,
-    count:2  //初次加载时每一类别显示几本书
+    count:1,  //初次加载时每一类别显示几本书
   },
   showAll: function (e) {
+    var animation = wx.createAnimation({
+      transformOrigin: "50% 50%",
+      duration: 1000,
+      timingFunction: "ease",
+      delay: 0
+    })  //创建一个动画实例
     var type = e.currentTarget.dataset.type;
     var that = this;
     var tableID = 3974
