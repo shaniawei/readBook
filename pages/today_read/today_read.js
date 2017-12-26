@@ -1,10 +1,11 @@
+var app=getApp()
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    
+    index:0
   },
   //获取3本书计划 或者 自助计划 里的书籍列表
   getbookList:function(){

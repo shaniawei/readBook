@@ -1,10 +1,12 @@
 <view class='today_read_list'>
-  <view class='item clearfix' wx:for='{{ booklist }}' id='{{ item.id }}'>
-    <view class='bookname fl-l'>{{ item.bookName }}</view>
-    <view class='fl-r info'>
-      <text>继续阅读</text>
-      <text>第{{  }}章:</text>
-      <text>小王子1</text>
-    </view>
+  <view class='item clearfix' wx:for='{{ booklist }}' id='{{ item.CategoryID }}'>
+    <navigator open-type='navigate' hover-class='none' url='../content/content?CategoryID={{ item.CategoryID }}&showSelect=true&isToday=true'>
+      <view class='bookname fl-l'>{{ item.bookName }}</view>
+      <view class='fl-r info'>
+        <text>继续阅读</text>
+        <text>第{{  }}章:</text>
+        <text>小王子1</text>
+      </view>
+    </navigator>
   </view>
 </view>

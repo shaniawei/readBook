@@ -10,7 +10,7 @@
 
       <view class='bookItem' wx:for='{{ booklistdata }}' id='{{ item.CategoryID }}'>
 
-        <navigator url='../content/content?CategoryID={{ item.CategoryID }}&showSelect=false' open-type='navigate' hover-class='none'>
+        <navigator url='../content/content?CategoryID={{ item.CategoryID }}&showSelect=false&isToday=false' open-type='navigate' hover-class='none'>
           <image src='{{item.img}}'></image>
           <view class='txt'>{{item.bookName}}</view>
         </navigator>

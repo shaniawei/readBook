@@ -118,22 +118,39 @@ Page({
     var showSelect = options.showSelect.indexOf('false')>-1?false:true  //是否显示选择题跳转按钮标记
     console.log(showSelect)
     console.log(typeof showSelect)
+    var isToday = options.isToday //判断阅读入口是不是 今日阅读
+    that.setData({
+      isToday
+    })
+    console.log(that.data.isToday)
+    console.log(isToday)
     that.setData({
       CategoryID: CategoryID,
       showSelect: showSelect
     })
+    if (isToday=='false'){
+      this.findIn(4080, CategoryID)
+      return
+    }
+    if (isToday == 'true') {
+      this.findIn(20333, CategoryID)
+      return
+    }
+  },
+  //查询阅读的是第几章 
+  findIn: function (tableID, CategoryID){
+    var that=this;
     // 实例化查询对象
     var query = new wx.BaaS.Query()
     //查询条件
     query.contains('CategoryID', CategoryID)
-    var tableID = 4080
     var Product = new wx.BaaS.TableObject(tableID)
     Product.setQuery(query).find().then((res) => {
       //success
       console.log(res.data.objects)
       if (res.data.objects.length == 0) {  //没看过这本书
 
-      }else{
+      } else {
         var index = parseInt(res.data.objects[0].index)   //看过 获取上一次离开的章节 索引  直接显示上次最后阅读的章节
         that.setData({
           index: index
@@ -144,8 +161,7 @@ Page({
       //error 
     }
     )
-    
-  }, 
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
@@ -174,7 +190,17 @@ Page({
     var index=this.data.detail.index-1  //哪一页
     console.log(index)
     var CategoryID = this.data.CategoryID //哪本书
-    let tableID = 4080
+    if(this.data.isToday=='false'){
+      this.findOut(4080, CategoryID, index)
+      return
+    }
+    if (this.data.isToday == 'true') {
+      this.findOut(20333, CategoryID, index)
+      return
+    }
+  },
+  //页面离开
+  findOut: function (tableID, CategoryID, index){
     //首先查询这个CategoryID是否在数据表里有记录 如果有的话直接更新index数据
     let Product = new wx.BaaS.TableObject(tableID)
     // 实例化查询对象
@@ -205,12 +231,11 @@ Page({
           // err
         })
       }
-      
+
     }, (err) => {
-        // err
+      // err
     })
   },
-
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
