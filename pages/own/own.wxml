@@ -1,19 +1,15 @@
-<view class='cue'>
-  <view class='item'>
+<view class='cue clearfix'>
+  <view class='item fl-r'>
     <text class='markColor m1'></text>
     <text class='txt'>未读</text>
   </view>
-  <view class='item'>
+  <view class='item fl-r'>
     <text class='markColor m2'></text>
-    <text class='txt'>补读</text>
-  </view>
-  <view class='item'>
-    <text class='markColor m3'></text>
-    <text class='txt'>当日已读</text>
+    <text class='txt'>已读</text>
   </view>
 </view>
 <!--日历start  -->
-<view class="flex box box-tb box-align-center" bindtouchstart="touchStart" bindtouchmove="touchMove" bindtouchend="touchEnd">
+<view class="flex box box-tb box-align-center">
   <view class="calendar pink-color box box-tb">
         <view class="top-handle fs28 box box-lr box-align-center box-pack-center">
             <!--上一月  -->
@@ -51,11 +47,12 @@
     </view>
 </view>
 <!--日历end  -->
+
 <navigator open-type='navigate' url='../study_plan/study_plan' hover-class='none'>
-  <button type='primary'>我的学习计划</button>
+  <button type='primary' class='typeSelect'>我的学习计划</button>
 </navigator>
 
 <navigator open-type='navigate' url='../today_read/today_read' hover-class='none'>
-  <button type='primary'>今日阅读内容</button>
+  <button type='primary' class='typeSelect'>今日阅读内容</button>
 </navigator>
 

@@ -7,6 +7,7 @@ Page({
     titleindex:1,
     booklist:[]
   },
+  //选择历史纪录 收藏
   selectTitle:function(e){
     this.setData({
       titleindex: e.currentTarget.dataset.titleindex

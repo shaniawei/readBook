@@ -1,15 +1,24 @@
 <template name='booklist'>
   <view class='typeList'>
-    <view class='typeTitle'>
+  
+    <view class='typeTitle clearfix'>
       <text>{{ typeTitle }}</text>
-      <button size='mini' bindtap='showAll' data-type='{{ type }}' style='float:right;'>全部</button>
+      <view class='showAll fl-r' bindtap='showAll' data-type='{{ type }}'>全部</view>
     </view>
 
-    <view class='bookItem' wx:for='{{ booklistdata }}' id='{{ item.CategoryID }}'>
-      <navigator url='../content/content?CategoryID={{ item.CategoryID }}&showSelect=false' open-type='navigate' hover-class='none'>
-        <image src='{{item.img}}'></image>
-        <text>{{item.bookName}}</text>
-      </navigator>
+    <view class='content'>
+
+      <view class='bookItem' wx:for='{{ booklistdata }}' id='{{ item.CategoryID }}'>
+
+        <navigator url='../content/content?CategoryID={{ item.CategoryID }}&showSelect=false' open-type='navigate' hover-class='none'>
+          <image src='{{item.img}}'></image>
+          <view class='txt'>{{item.bookName}}</view>
+        </navigator>
+
+      </view>
+
     </view>
+    
   </view>
+
 </template>

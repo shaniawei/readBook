@@ -1,16 +1,7 @@
-.cue::after{
-  content: ".";
-  display: block;
-  clear: both;
-  line-height: 0;
-  visibility: hidden;
-}
 .cue{
   font-size: 20rpx;
-  padding-right: 40rpx;
 }
 .cue .item{
-  float: right;
   margin-right: 30rpx;
 }
 .cue .item .markColor{
@@ -25,16 +16,14 @@
   background-color: #999;
 }
 .m2{
-  background-color: orange;
-}
-.m3{
   background-color: green;
 }
 
-button{
-  margin: 40rpx auto;
+.typeSelect{
+  margin: 60rpx auto;
   width: 60%;
 }
+
 /* 日历 */
 
 .box {
@@ -192,7 +181,7 @@ button{
     height: 325rpx;
 } */
 .grid {
-    width: 107.1428571429rpx;
+    width: 99.1428571429rpx;
 }
 .day {
     width: 60rpx;

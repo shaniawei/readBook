@@ -1,0 +1,6 @@
+<!--pages/user_defined/user_defined.wxml-->
+
+<view class='noDefined'>
+  您还没有加入任何书籍到自助计划哦~
+</view>
+<button type='primary'></button>

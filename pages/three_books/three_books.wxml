@@ -1,0 +1,18 @@
+<!--3本书计划区 
+数据表中新增一个字段 givenBook 值为true则表示列入三本书计划中
+
+ -->
+<view wx:if="{{ dataLoadFinish }}">
+  <view class='tips'>您本月需要阅读的三本书：</view>
+
+  <view class='threeBooks'>
+    <view class='bookItem' wx:for='{{ booklist }}' id='{{ item.CategoryID }}'>
+      <image src='{{item.img}}'></image>
+      <text class='txt'>{{item.bookName}}</text>
+    </view>
+  </view>
+
+  <navigator open-type='navigate' hover-class='none' url='../today_read/today_read'>
+    <button class='gotoRead' type='primary'>前往阅读</button>
+  </navigator>
+</view>

@@ -10,7 +10,26 @@ Page({
     detail:{},
     noOrYes:false,
     index:0,
-    showSelect:false
+    showSelect:false,
+    showCatalog:false
+  },
+  //显示目录结构
+  showCatalog:function(){
+    this.setData({
+      showCatalog:true
+    })
+    wx.pageScrollTo({
+      scrollTop: 0,
+    })
+  },
+  //显示对应的章节内容
+  showContent:function(e){
+    var index=e.currentTarget.dataset.index;
+    var id = e.currentTarget.dataset.id;
+    this.getDetail(id,index);
+    this.setData({
+      showCatalog:false
+    })
   },
   //获取CategoryID类里的内容列表
   getChapter: function (id) {
@@ -115,7 +134,7 @@ Page({
       if (res.data.objects.length == 0) {  //没看过这本书
 
       }else{
-        var index = parseInt(res.data.objects[0].index)   //看过 获取上一次离开的章节 索引
+        var index = parseInt(res.data.objects[0].index)   //看过 获取上一次离开的章节 索引  直接显示上次最后阅读的章节
         that.setData({
           index: index
         })

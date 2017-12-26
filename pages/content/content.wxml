@@ -1,17 +1,53 @@
+<!--根据书籍id(categeryid)获取章节id列表 判断是否有历史阅读位置 若有则显示上一次最后阅读位置 若无则直接显示第一章
+上一章下一章均根据 当前章节在章节id列表中所处的索引值进行渲染
+目录根据章节列表进行渲染
+
+功能：
+1.记录阅读位置 实现继续阅读 不用每次进入都显示第一章
+2.实现 显示目录功能 供用户进行翻阅浏览
+3.根据前一个页面穿过来的showSelect值 判断是否显示跳转选择题按钮 若显示 则根据章节id跳转至选择题页面 显示对应的一套选择题
+
+需要优化的地方：
+1.如果用户阅读到第五章 现在他通过浏览目录进入到第三章 然后就离开了这个页面 此时记录的阅读位置就是第三章  用户下次进来的时候就会直接显示第三章   可不可以直接显示第五章？
+2.点击上一章 问题同上
+3.目录显示时 如果没有选择任何章节 直接返回 会返回到书籍列表页面去 
+不要单独给目录一个页面 直接显示在当前页面 但是返回时回到刚才的阅读区 
+
+预计实现的功能：
+1.记录阅读时间（无选择题） --进入这个页面至离开这个页面
+2.记录阅读时间（有选择题） --进入这个页面至离开选择题页面
+
+  -->
+
 <import src="../../wxParser/index.wxml"/>
+
 <view wx:if="{{ noOrYes }}">
   <view class='title'>第{{ detail.index }}章</view>
+
   <view class='title'>{{ detail.title }}</view>
+
   <view class="wxParser detail">
     <template is="wxParser" data="{{wxParserData:richText.nodes}}"/>
   </view>
+
   <view wx:if="{{ showSelect }}">
     <navigator url='../select/select?richTextID={{ detail.richTextID }}' open-type='navigate' hover-class='none'>
-    <button type='warn' class='toSelect'>练习</button>
-  </navigator>
+      <button type='warn' class='toSelect'>练习</button>
+    </navigator>
   </view>
+
   <view class='nextOrPre' >
-    <button type='primary' size='mini' data-index='{{ detail.index-1 }}' data-flag='-1' bindtap='getonechapter'>上一章</button>
-    <button type='primary' size='mini' data-index='{{ detail.index-1 }}' data-flag='1' bindtap='getonechapter'>下一章</button>
+    <button type='primary' size='mini' data-index='{{ detail.index-1 }}' data-flag='-1' bindtap='getonechapter'>上一章          </button>
+    <button type='primary' size='mini' bindtap='showCatalog'>目录</button>
+    <button type='primary' size='mini' data-index='{{ detail.index-1 }}' data-flag='1' bindtap='getonechapter'>下一章          </button>
+  </view>
+
+</view>
+
+<!--目录  -->
+<view class='cataLog cover_view' wx:if="{{ showCatalog }}">
+  <view class="item" wx:for="{{ chapterList }}" data-index='{{ index }}' data-id='{{ item.id }}' bindtap='showContent'>
+    <text>第{{ index+1 }}章</text>
+    <text>{{ item.title }}</text>
   </view>
 </view>

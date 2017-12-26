@@ -1,13 +1,18 @@
+
 <view class='bigTitle'>
   <text class="history {{ titleindex==1?'active':'' }}" bindtap='selectTitle' data-titleindex='1'>历史记录</text>
   <text class="collect {{ titleindex==2?'active':'' }}" bindtap='selectTitle' data-titleindex='2'>收藏</text>
 </view>
+
 <view wx:if='{{ titleindex=="1" }}'>
+
   <view class='bookItem' wx:for='{{ booklist }}' id='{{ item.CategoryID }}'>
-    <navigator url='../content/content?CategoryID={{ item.CategoryID }}' open-type='navigate' hover-class='none'>
+    <navigator url='../content/content?CategoryID={{ item.CategoryID }}&showSelect=false' open-type='navigate' hover-class='none'>
       <image src='{{item.img}}'></image>
-      <text>{{item.bookName}}</text>
+      <text class='txt'>{{item.bookName}}</text>
     </navigator>
   </view>
+  
 </view>
+
 <view wx:if='{{ titleindex=="2" }}'>收藏</view>

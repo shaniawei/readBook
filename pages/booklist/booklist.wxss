@@ -1,35 +1,9 @@
-.bookItem{
-  margin-bottom: 40rpx;
-  margin-right: 40rpx;
-  text-align: center;
-  display: inline-block;
-}
-image{
-  width: 300rpx;
-  height: 400rpx;
-  display: block;
-}
-
-.typeTitle::after{
-  content: ".";
-  display: block;
-  line-height: 0;
-  clear: both;
-  visibility: hidden;
-}
 .typeTitle{
   margin-bottom: 40rpx;
   border-bottom: 1px solid #ddd;
-  
+  padding: 20rpx 0;
 }
-.showBookList{
-  animation: showBooklist 3s ;
-}
-@keyframes showBooklist{
-  from{
-    height: 0;
-  }
-  to{
-    height: auto;
-  }
+.typeTitle .showAll{
+  font-size: 32rpx;
+  letter-spacing: 8rpx;
 }

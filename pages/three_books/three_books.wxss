@@ -1,0 +1,7 @@
+.tips{
+  margin-bottom: 40rpx;
+}
+.gotoRead{
+  width: 60%;
+  margin: 40rpx auto;
+}

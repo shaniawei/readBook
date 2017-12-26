@@ -1,13 +1,13 @@
-<navigator open-type='navigate' url='' hover-class='none'>
+ <navigator open-type='navigate' url='../three_books/three_books' hover-class='none'> 
   <button type='primary'>每月3本书计划</button>
-</navigator>
+ </navigator> 
 
-<navigator open-type='navigate' url='' hover-class='none'>
+ <navigator open-type='navigate' url='' hover-class='none'> 
   <button type='primary'>100日读书计划</button>
-</navigator>
+ </navigator> 
 
-<navigator open-type='navigate' url='' hover-class='none'>
-  <button type='primary'>自助计划自定</button>
+<navigator open-type='navigate' url='../user_defined/user_defined' hover-class='none'>
+  <button type='primary'>自助计划制定</button>
 </navigator>
 
 
