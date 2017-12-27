@@ -36,11 +36,29 @@ Page({
       // err
     })
   },
+  //获取今日阅读书籍的阅读位置
+  getHistoryPlace:function(){
+    var Product = new wx.BaaS.TableObject(4080)
+    // 实例化查询对象
+    var query = new wx.BaaS.Query()  //3本书计划的
+    // 设置查询条件（比较、字符串包含、组合等）
+    query.contains('isToday', 'true')
+    Product.setQuery(query).find().then((res) => {
+      // success
+      console.log(res.data.objects)
+      that.setData({
+        historyPlace: res.data.objects
+      })
+    }, (err) => {
+      // err
+    })
+  },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
     this.getbookList()
+    this.getHistoryPlace();
   },
 
   /**

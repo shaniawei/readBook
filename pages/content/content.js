@@ -113,39 +113,30 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    var that=this;
     var CategoryID = options.CategoryID;
     var showSelect = options.showSelect.indexOf('false')>-1?false:true  //是否显示选择题跳转按钮标记
-    console.log(showSelect)
-    console.log(typeof showSelect)
     var isToday = options.isToday //判断阅读入口是不是 今日阅读
-    that.setData({
+    this.setData({
+      CategoryID: CategoryID,
+      showSelect: showSelect,
       isToday
     })
-    console.log(that.data.isToday)
-    console.log(isToday)
-    that.setData({
-      CategoryID: CategoryID,
-      showSelect: showSelect
-    })
-    if (isToday=='false'){
-      this.findIn(4080, CategoryID)
-      return
-    }
-    if (isToday == 'true') {
-      this.findIn(20333, CategoryID)
-      return
-    }
+    this.findIn(4080, CategoryID, isToday)
   },
   //查询阅读的是第几章 
-  findIn: function (tableID, CategoryID){
+  findIn: function (tableID, CategoryID, isToday){
     var that=this;
     // 实例化查询对象
-    var query = new wx.BaaS.Query()
+    var query1 = new wx.BaaS.Query()
+    var query2 = new wx.BaaS.Query()
     //查询条件
-    query.contains('CategoryID', CategoryID)
+    query1.contains('CategoryID', CategoryID)
+    query2.contains('isToday', isToday)
+    // and 查询
+    var andQuery = wx.BaaS.Query.and(query1, query2)
+
     var Product = new wx.BaaS.TableObject(tableID)
-    Product.setQuery(query).find().then((res) => {
+    Product.setQuery(andQuery).find().then((res) => {
       //success
       console.log(res.data.objects)
       if (res.data.objects.length == 0) {  //没看过这本书
@@ -190,30 +181,31 @@ Page({
     var index=this.data.detail.index-1  //哪一页
     console.log(index)
     var CategoryID = this.data.CategoryID //哪本书
-    if(this.data.isToday=='false'){
-      this.findOut(4080, CategoryID, index)
-      return
-    }
-    if (this.data.isToday == 'true') {
-      this.findOut(20333, CategoryID, index)
-      return
-    }
+    var isToday = this.data.isToday
+    this.findOut(4080, CategoryID, index, isToday)
+
   },
   //页面离开
-  findOut: function (tableID, CategoryID, index){
+  findOut: function (tableID, CategoryID, index, isToday){
     //首先查询这个CategoryID是否在数据表里有记录 如果有的话直接更新index数据
     let Product = new wx.BaaS.TableObject(tableID)
     // 实例化查询对象
-    var query = new wx.BaaS.Query()
+    var query1 = new wx.BaaS.Query()
+    var query2 = new wx.BaaS.Query()
     // 设置查询条件（比较、字符串包含、组合等）
-    query.contains('CategoryID', CategoryID)
-    Product.setQuery(query).find().then((res) => {
+    query1.contains('CategoryID', CategoryID)
+    query2.contains('isToday', isToday)
+    // and 查询
+    var andQuery = wx.BaaS.Query.and(query1, query2)
+
+    Product.setQuery(andQuery).find().then((res) => {
       // success
       if (res.data.objects.length == 0) {  //数据表里没有CategoryID这条数据 需要新增一条
         let product = Product.create()
         let history = {
           index: index.toString(),
-          CategoryID: CategoryID
+          CategoryID: CategoryID,
+          isToday: isToday
         }
         product.set(history).save().then((res) => {
           // success
