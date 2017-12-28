@@ -4,7 +4,9 @@
   line-height: 80rpx;
   margin-bottom: 20rpx;
 }
-
+.today_read_list .item navigator{
+  height: 100%;
+}
 .today_read_list .item .info{
   font-size: 28rpx;
 }

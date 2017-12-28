@@ -5,7 +5,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    index:0
+    dataLoadFinish:false
   },
   //获取3本书计划 或者 自助计划 里的书籍列表
   getbookList:function(){
@@ -30,24 +30,7 @@ Page({
       console.log(res.data.objects)
       that.setData({
         booklist: res.data.objects,
-        dataLoadFinish: true
-      })
-    }, (err) => {
-      // err
-    })
-  },
-  //获取今日阅读书籍的阅读位置
-  getHistoryPlace:function(){
-    var Product = new wx.BaaS.TableObject(4080)
-    // 实例化查询对象
-    var query = new wx.BaaS.Query()  //3本书计划的
-    // 设置查询条件（比较、字符串包含、组合等）
-    query.contains('isToday', 'true')
-    Product.setQuery(query).find().then((res) => {
-      // success
-      console.log(res.data.objects)
-      that.setData({
-        historyPlace: res.data.objects
+        dataLoadFinish:true
       })
     }, (err) => {
       // err
@@ -58,7 +41,6 @@ Page({
    */
   onLoad: function (options) {
     this.getbookList()
-    this.getHistoryPlace();
   },
 
   /**

@@ -1,12 +1,13 @@
-<view class='today_read_list'>
+<view class='today_read_list' wx:if="{{ dataLoadFinish }}">
   <view class='item clearfix' wx:for='{{ booklist }}' id='{{ item.CategoryID }}'>
     <navigator open-type='navigate' hover-class='none' url='../content/content?CategoryID={{ item.CategoryID }}&showSelect=true&isToday=true'>
       <view class='bookname fl-l'>{{ item.bookName }}</view>
-      <view class='fl-r info'>
-        <text>继续阅读</text>
-        <text>第{{  }}章:</text>
-        <text>小王子1</text>
+      <view class='fl-r info' wx:if="{{ item.chapterName }}">
+        <text>上次阅读到</text>
+        <text>第{{ item.today_index+1 }}章:</text>
+        <text>{{ item.chapterName }}</text>
       </view>
+      <view class='fl-r info' wx:else>开始阅读</view>
     </navigator>
   </view>
 </view>

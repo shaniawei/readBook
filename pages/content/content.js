@@ -121,31 +121,36 @@ Page({
       showSelect: showSelect,
       isToday
     })
-    this.findIn(4080, CategoryID, isToday)
+    this.findIn(3974, CategoryID, isToday)
   },
   //查询阅读的是第几章 
   findIn: function (tableID, CategoryID, isToday){
     var that=this;
     // 实例化查询对象
-    var query1 = new wx.BaaS.Query()
-    var query2 = new wx.BaaS.Query()
+    var query = new wx.BaaS.Query()
     //查询条件
-    query1.contains('CategoryID', CategoryID)
-    query2.contains('isToday', isToday)
-    // and 查询
-    var andQuery = wx.BaaS.Query.and(query1, query2)
-
+    query.contains('CategoryID', CategoryID)
     var Product = new wx.BaaS.TableObject(tableID)
-    Product.setQuery(andQuery).find().then((res) => {
+    Product.setQuery(query).find().then((res) => {
       //success
-      console.log(res.data.objects)
-      if (res.data.objects.length == 0) {  //没看过这本书
-
-      } else {
-        var index = parseInt(res.data.objects[0].index)   //看过 获取上一次离开的章节 索引  直接显示上次最后阅读的章节
-        that.setData({
-          index: index
-        })
+      if (isToday=='true'){  //阅读入口 是 今日阅读
+        if (res.data.objects[0].today_index == undefined) {  //没看过这本书
+          console.log('没有阅读过 --今日阅读')
+        } else {
+          var index = res.data.objects[0].today_index   //看过 获取上一次离开的章节 索引  直接显示上次最后阅读的章节
+          that.setData({
+            index: index
+          })
+        }
+      }else{
+        if (res.data.objects[0].other_index == undefined) {  //没看过这本书
+          console.log('没有阅读过 --图书馆')
+        } else {
+          var index = res.data.objects[0].other_index   //看过 获取上一次离开的章节 索引  直接显示上次最后阅读的章节
+          that.setData({
+            index: index
+          })
+        }
       }
       that.getChapter(that.data.CategoryID)
     }, (res) => {
@@ -182,40 +187,36 @@ Page({
     console.log(index)
     var CategoryID = this.data.CategoryID //哪本书
     var isToday = this.data.isToday
-    this.findOut(4080, CategoryID, index, isToday)
-
+    this.findOut(3974, CategoryID, index, isToday)
   },
   //页面离开
   findOut: function (tableID, CategoryID, index, isToday){
-    //首先查询这个CategoryID是否在数据表里有记录 如果有的话直接更新index数据
+    var that=this;
     let Product = new wx.BaaS.TableObject(tableID)
     // 实例化查询对象
-    var query1 = new wx.BaaS.Query()
-    var query2 = new wx.BaaS.Query()
+    var query = new wx.BaaS.Query()
     // 设置查询条件（比较、字符串包含、组合等）
-    query1.contains('CategoryID', CategoryID)
-    query2.contains('isToday', isToday)
-    // and 查询
-    var andQuery = wx.BaaS.Query.and(query1, query2)
-
-    Product.setQuery(andQuery).find().then((res) => {
-      // success
-      if (res.data.objects.length == 0) {  //数据表里没有CategoryID这条数据 需要新增一条
-        let product = Product.create()
-        let history = {
-          index: index.toString(),
-          CategoryID: CategoryID,
-          isToday: isToday
-        }
-        product.set(history).save().then((res) => {
+    query.contains('CategoryID', CategoryID)
+    Product.setQuery(query).find().then((res) => {
+        // success
+      let product = Product.getWithoutData(res.data.objects[0].id)
+      if (isToday=='true'){
+        product.set('today_index', index)
+        product.update().then((res) => {
           // success
           console.log(res)
+          product.set('chapterName', that.data.detail.title)
+          product.update().then((res) => {
+            // success
+            console.log(res)
+          }, (err) => {
+            // err
+          })
         }, (err) => {
           // err
         })
-      } else {   //数据表里有CategoryID这条数据 需要更新
-        let product = Product.getWithoutData(res.data.objects[0].id)
-        product.set('index', index.toString())
+      }else{
+        product.set('other_index', index)
         product.update().then((res) => {
           // success
           console.log(res)
@@ -223,7 +224,7 @@ Page({
           // err
         })
       }
-
+  
     }, (err) => {
       // err
     })
