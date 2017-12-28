@@ -18,34 +18,20 @@ Page({
    */
   onLoad: function (options) {
     var that = this;
-    let tableID = 4080
+    let tableID = 3974
     var Product = new wx.BaaS.TableObject(tableID)
-    Product.find().then((res) => {  //首先查询打开过的书籍有哪些
-      //success
-      var list = res.data.objects;
-      var IDlist=[]
-      for(var i=0;i<list.length;i++){
-        IDlist.push(list[i].CategoryID)
-      }
-      // 实例化查询对象
-      var query = new wx.BaaS.Query()
-      // 设置查询条件（比较、字符串包含、组合等）
-      query.in('CategoryID', IDlist)
-      // 应用查询对象
-      var ProductID = new wx.BaaS.TableObject(3974)  //根据打开过的书籍id找到对应的书籍信息数据
-      ProductID.setQuery(query).find().then((res) => {
+    // 实例化查询对象
+    var query = new wx.BaaS.Query()
+    // 设置查询条件（比较、字符串包含、组合等）
+    query.isNotNull('other_index')
+    Product.setQuery(query).find().then((res) => {
         // success
-        that.setData({
-          booklist:res.data.objects
-        })
-      }, (err) => {
-        // err
+      that.setData({
+        booklist: res.data.objects
       })
-
-      }, (res) => {
-        //error
-      }
-    )
+    }, (err) => {
+        // err
+    })
   },
 
   /**
