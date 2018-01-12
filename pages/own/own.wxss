@@ -18,7 +18,9 @@
 .m2{
   background-color: green;
 }
-
+.m3{
+  background-color: blue;
+}
 .typeSelect{
   margin: 60rpx auto;
   width: 60%;
@@ -198,7 +200,7 @@
     color: #fff;
 }
 .pink-bg {
-    background-color: green;
+    background-color: blue;
 }
 .purple-bg {
     background-color: #b8b8f1;

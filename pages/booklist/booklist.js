@@ -6,6 +6,44 @@ Page({
   data: {
     dataLoadFinish:false,
     count:3,  //初次加载时每一类别显示几本书
+    definedText:'收藏'
+  },
+  //加入自助计划
+  addDefined:function(e){
+    var that=this;
+    var CategoryID=e.currentTarget.dataset.id;
+    console.log(CategoryID)
+    wx.showModal({
+      title: '加入自助计划',
+      content: '点击收藏，即可加入自助计划',
+      success:function(data){
+        if(data.confirm==true){
+          let Product = new wx.BaaS.TableObject(3974)
+          // 实例化查询对象
+          var query = new wx.BaaS.Query()
+          // 设置查询条件（比较、字符串包含、组合等）
+          query.contains('CategoryID', CategoryID)
+          Product.setQuery(query).find().then((res) => {
+            // success
+            let product = Product.getWithoutData(res.data.objects[0].id)
+            product.set('userDefined', 'true')
+              product.update().then((res) => {
+                // success
+                console.log(res)
+                // that.setData({
+                //   definedText:'移除'
+                // })
+
+              }, (err) => {
+                // err
+              })
+
+          }, (err) => {
+            // err
+          })
+        }
+      }
+    })
   },
   showAll: function (e) {
     var type = e.currentTarget.dataset.type;

@@ -1,3 +1,7 @@
+<!--
+预计：
+1.阅读完毕后 显示阅读完毕
+  -->
 <view class='today_read_list' wx:if="{{ dataLoadFinish }}">
   <view class='item clearfix' wx:for='{{ booklist }}' id='{{ item.CategoryID }}'>
     <navigator open-type='navigate' hover-class='none' url='../content/content?CategoryID={{ item.CategoryID }}&showSelect=true&isToday=true'>

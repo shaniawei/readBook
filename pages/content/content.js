@@ -142,6 +142,9 @@ Page({
             index: index
           })
         }
+        that.setData({   //判断这本书籍有没有选择题
+          showSelect: res.data.objects[0].hasSelect
+        })
       }else{
         if (res.data.objects[0].other_index == undefined) {  //没看过这本书
           console.log('没有阅读过 --图书馆')
@@ -183,11 +186,14 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {   //离开的时候看的是哪本书哪一章 记录下来
-    var index=this.data.detail.index-1  //哪一页
-    console.log(index)
-    var CategoryID = this.data.CategoryID //哪本书
-    var isToday = this.data.isToday
-    this.findOut(3974, CategoryID, index, isToday)
+    if (this.data.showSelect==false){  //如果没有选择题 离开该页面时记录阅读位置
+      var index = this.data.detail.index - 1  //哪一页
+      console.log(index)
+      var CategoryID = this.data.CategoryID //哪本书
+      var isToday = this.data.isToday
+      this.findOut(3974, CategoryID, index, isToday)
+    }
+    
   },
   //页面离开
   findOut: function (tableID, CategoryID, index, isToday){

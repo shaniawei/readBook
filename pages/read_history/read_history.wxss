@@ -1,0 +1,13 @@
+/* pages/read_history/read_history.wxss */
+.book-name,.book-chapter{
+  float: left;
+}
+.book-name{
+  padding-right: 40rpx;
+  margin-right: 30rpx;
+}
+
+.book-name .item{
+  border-bottom: 1px solid #ddd;
+  padding: 20rpx 0;
+}

@@ -1,3 +1,11 @@
+<!--
+功能：
+1.循环显示单选多选
+2.提交时得出总分数
+3.高于 40 分 则计入 今日阅读 历史记录并在日历中显示
+4.低于 40 分提供重做 及 返回上一页按钮
+  -->
+
 <view class='main-select' wx:if='{{ noOrYes }}'>
   <view class='con'>
     <view class='type'>

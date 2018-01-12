@@ -33,12 +33,15 @@ Page({
   },
   //日期高亮显示
   tapDayItem() {
-    const idx = new Date().getDate() - 1;   //当天是几号 再次基础上减1
-    const days = this.data.days;            //当月多少天
-    days[idx].choosed = !days[idx].choosed;
-    this.setData({
-      days,
-    });
+    if (this.data.cur_year == new Date().getFullYear() && this.data.cur_month == new Date().getMonth()+1){
+      console.log(222)
+      const idx = new Date().getDate() - 1;   //当天是几号 在此基础上减1
+      const days = this.data.days;            //当月多少天
+      days[idx].choosed = !days[idx].choosed;
+      this.setData({
+        days,
+      });
+    }    
   },
   getThisMonthDays(year, month) {
     return new Date(year, month, 0).getDate(); //这里的month是当前准确的month 返回当前的天数
@@ -77,10 +80,10 @@ Page({
         choosed: false
       });
     }
-
     this.setData({
       days
     });
+    
   },
   //上一个月 下一个月
   handleCalendar(e) {
@@ -102,6 +105,7 @@ Page({
         cur_year: newYear,
         cur_month: newMonth
       });
+      this.tapDayItem();
 
     } else {  //往左  下个月
       let newMonth = cur_month + 1;
@@ -118,6 +122,7 @@ Page({
         cur_year: newYear,
         cur_month: newMonth
       });
+      this.tapDayItem();
     }
   },
   //选择年月
@@ -131,31 +136,8 @@ Page({
       cur_year: new_year,
       cur_month: new_month
     })
+    this.tapDayItem();
   },
-  //触摸开始事件
-  // touchStart:function(e){
-  //   touchDot = e.touches[0].pageX; // 获取触摸时的原点
-  //   // 使用js计时器记录时间    
-  //   interval = setInterval(function () {
-  //     time++;
-  //   }, 1000); 
-  // },
-  // // 触摸移动事件
-  // touchMove: function (e) {
-  //   var touchMove = e.touches[0].pageX;
-  //   console.log(touchDot)
-  //   console.log(touchMove)
-  //   if (touchMove < touchDot && time >= 1){  //往右滑动
-  //     this.handleCalendar('1')
-  //   } else if (touchMove > touchDot && time >= 1){  //往左滑动
-  //     this.handleCalendar('-1')
-  //   }
-  // },
-  // // 触摸结束事件
-  // touchEnd: function () {
-  //   clearInterval(interval); // 清除setInterval
-  //   time = 0;
-  // },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

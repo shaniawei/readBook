@@ -1,15 +1,16 @@
 {
   "pages": [
-    "pages/own/own",
     "pages/booklist/booklist",
+    "pages/own/own",
+    "pages/read_history/read_history",
+    
     "pages/today_read/today_read",
     "pages/study_plan/study_plan",
     "pages/bookcase/bookcase",
     "pages/select/select",
     "pages/content/content",
     "pages/three_books/three_books",
-    "pages/user_defined/user_defined"
-    
+    "pages/user_defined/user_defined"    
   ],
   "window": {
     "backgroundTextStyle": "light",

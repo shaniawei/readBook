@@ -1,0 +1,17 @@
+<!--pages/read_history/read_history.wxml-->
+<view class='book-name'>
+  <view class='item'>
+    小王子
+  </view>
+  <view class='item'>
+    喵喵
+  </view>
+  <view class='item'>
+    挪威的森林
+  </view>
+</view>
+<view class='book-chapter'>
+  <view class='item'>
+    小王子1
+  </view>
+</view>
