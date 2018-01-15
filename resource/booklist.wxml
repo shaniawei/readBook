@@ -9,12 +9,32 @@
     <view class='content'>
 
       <view class='bookItem' wx:for='{{ booklistdata }}' id='{{ item.CategoryID }}'>
-        <text class='own-defined' data-id='{{ item.CategoryID }}' bindtap='addDefined'>{{ definedText }}</text>
+        <text class='own-defined' data-id='{{ item.CategoryID }}' bindtap='addDefined' wx:if='{{ item.givenBook=="false"?true:false }}'>{{ item.userDefined=='false'?'收藏':'移除' }}</text>
         <navigator url='../content/content?CategoryID={{ item.CategoryID }}&showSelect=false&isToday=false' open-type='navigate' hover-class='none'>
           <image src='{{item.img}}'></image>
           <view class='txt'>{{item.bookName}}</view>
         </navigator>
 
+      </view>
+
+    </view>
+    
+  </view>
+
+</template>
+<template name='defined'>
+  <view class='typeList' wx:if='{{ booklistdata }}'>
+  
+    <view class='typeTitle clearfix'>
+      <text>{{ typeTitle }}</text>
+    </view>
+
+    <view class='content'>
+
+      <view class='bookItem' wx:for='{{ booklistdata }}' id='{{ item.CategoryID }}'>
+        <text class='own-defined' data-id='{{ item.CategoryID }}' bindtap='removeDefined'>{{ item.userDefined=='false'?'收藏':'移除' }}</text>
+          <image src='{{item.img}}'></image>
+          <view class='txt'>{{item.bookName}}</view>
       </view>
 
     </view>

@@ -11,7 +11,8 @@ Page({
     noOrYes:false,
     index:0,
     showSelect:false,
-    showCatalog:false
+    showCatalog:false,
+    date: new Date().getFullYear() + '-' + parseInt(new Date().getMonth() + 1) + '-' + new Date().getDate()
   },
   //显示目录结构
   showCatalog:function(){
@@ -133,6 +134,9 @@ Page({
     var Product = new wx.BaaS.TableObject(tableID)
     Product.setQuery(query).find().then((res) => {
       //success
+      that.setData({
+        bookName: res.data.objects[0].bookName
+      })
       if (isToday=='true'){  //阅读入口 是 今日阅读
         if (res.data.objects[0].today_index == undefined) {  //没看过这本书
           console.log('没有阅读过 --今日阅读')
@@ -186,12 +190,46 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {   //离开的时候看的是哪本书哪一章 记录下来
+    var that=this;
     if (this.data.showSelect==false){  //如果没有选择题 离开该页面时记录阅读位置
       var index = this.data.detail.index - 1  //哪一页
       console.log(index)
       var CategoryID = this.data.CategoryID //哪本书
       var isToday = this.data.isToday
       this.findOut(3974, CategoryID, index, isToday)
+
+      //将章节数据存入数据表 start
+      let ProductFall = new wx.BaaS.TableObject(22303)
+      // 实例化查询对象
+      let queryFall = new wx.BaaS.Query()
+      // 设置查询条件（比较、字符串包含、组合等）
+      queryFall.contains('chapterName', that.data.detail.title)
+      ProductFall.setQuery(queryFall).find().then((res) => {
+        // success
+        console.log(res)
+        if (res.data.objects.length == 0) {  //没有数据时存入
+          let product = ProductFall.create()
+
+          // 设置方式一
+          let dataFall = {
+            date: that.data.date,
+            bookName: that.data.bookName,
+            chapterName: that.data.detail.title,
+            index: (that.data.detail.index-1).toString()
+          }
+          product.set(dataFall).save().then((res) => {
+            // success
+            console.log(666)
+            console.log(res)
+          }, (err) => {
+            // err
+          })
+        } 
+      }, (err) => {
+        // err
+      })
+      //将章节数据存入数据表 end
+
     }
     
   },

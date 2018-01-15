@@ -1,9 +1,1 @@
-.typeTitle{
-  margin-bottom: 40rpx;
-  border-bottom: 1px solid #ddd;
-  padding: 20rpx 0;
-}
-.typeTitle .showAll{
-  font-size: 32rpx;
-  letter-spacing: 8rpx;
-}
+

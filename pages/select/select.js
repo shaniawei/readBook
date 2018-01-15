@@ -10,7 +10,8 @@ Page({
     noOrYes: false,
     CategoryID:'',
     index:0,
-    chapterName:''
+    chapterName:'',
+    date: new Date().getFullYear() + '-' + parseInt(new Date().getMonth() + 1) +'-'+new Date().getDate()
   },
   applyBtn:function(){
     var that=this;
@@ -40,28 +41,65 @@ Page({
           product.update().then((res) => {
             // success
             console.log(res)
+
           }, (err) => {
             // err
-            console.log(4444)
+            
           })
         }, (err) => {
           // err
           console.log(err)
         })
       })
+
+      //将章节数据存入数据表 start
+      let ProductFall = new wx.BaaS.TableObject(22303)
+      // 实例化查询对象
+      let queryFall = new wx.BaaS.Query()
+      // 设置查询条件（比较、字符串包含、组合等）
+      queryFall.contains('chapterName', that.data.chapterName)
+      ProductFall.setQuery(queryFall).find().then((res) => {
+        // success
+        console.log(res)
+        if(res.data.objects.length==0){  //没有数据时存入
+          let product = ProductFall.create()
+
+          // 设置方式一
+          let dataFall = {
+            date: that.data.date,
+            bookName: that.data.bookName,
+            chapterName: that.data.chapterName,
+            index: that.data.index
+          }
+          product.set(dataFall).save().then((res) => {
+            // success
+            console.log(666)
+            console.log(res)
+          }, (err) => {
+            // err
+          })
+        }else {  //已经做了一遍达到 40分 以上，但用户又做了一遍 同时达到 40分 以上 分值不一样
+
+        }
+      }, (err) => {
+        // err
+      })
+      //将章节数据存入数据表 end
+
       that.data.totlaScore = that.data.totlaScore.toString();
       wx.showModal({
         title: '您的总分数是',
         content: that.data.totlaScore,
         showCancel: false,
-        success: function (data){  //点击确定
-          if (data.confirm==true){
+        success: function (data) {  //点击确定
+          if (data.confirm == true) {
             wx.navigateBack({   //返回上一页
               delta: 1
             })
           }
         }
       })
+
     }else{  //分数低于40分
       that.data.totlaScore = that.data.totlaScore.toString();
       wx.showModal({
@@ -114,7 +152,8 @@ Page({
       richTextID: options.richTextID,
       CategoryID: options.CategoryID,
       index: options.index,
-      chapterName: options.chapterName
+      chapterName: options.chapterName,
+      bookName: options.bookName
     })
     var that = this;                     //获取page实例
     // 实例化查询对象

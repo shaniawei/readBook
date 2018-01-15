@@ -1,1 +1,25 @@
 /* pages/user_defined/user_defined.wxss */
+.noDefined{
+  text-align: center;
+}
+.noDefined image{
+  width: 100%;
+  display: block;
+  margin-bottom: 30rpx;
+}
+
+.noDefined button{
+  width: 80%;
+  margin: 30rpx auto 0;
+}
+.selectBook{
+  border-radius: 50%;
+  width: 110rpx;
+  height: 110rpx;
+  line-height: 110rpx;
+  position:fixed;
+  right:20rpx;
+  top:45%;
+  font-size:28rpx;
+  padding: 0;
+}

@@ -12,7 +12,20 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-  
+    var date=options.date;
+    console.log(date)
+    // 应用查询对象
+    var Product = new wx.BaaS.TableObject(22303)
+    // 实例化查询对象
+    var query = new wx.BaaS.Query()
+    // 设置查询条件（比较、字符串包含、组合等）
+    query.contains('date', date)
+    Product.setQuery(query).find().then((res) => {
+        // success
+        console.log(res)
+    }, (err) => {
+      // err
+    })
   },
 
   /**
@@ -26,7 +39,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-  
+
   },
 
   /**

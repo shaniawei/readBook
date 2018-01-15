@@ -1,9 +1,6 @@
 // clock.js
 'use strict';
 var app = getApp();  //小程序实例
-var touchDot = 0;//触摸时的原点
-var time = 0;//  时间记录，用于滑动时且时间小于1s则执行左右滑动
-var interval = "";// 记录/清理 时间记录
 Page({
   /**
    * 页面的初始数据
@@ -12,11 +9,25 @@ Page({
     hasEmptyGrid: false,  //是否显示空白区域
     startDate:'2000-01-01',
     endDate:'2020-01-01',
+    nowYear: new Date().getFullYear(),
+    nowMonth: new Date().getMonth(),
     nowday:new Date().getDate()
   },
   /**
    * 生命周期函数--监听页面加载
    */
+  //跳转至阅读历史流水中
+  viewHistoryFall:function(e){
+    var that=this;
+    var date = parseInt(e.currentTarget.dataset.idx)+1;  //被选中的是哪一天
+    var nowTime = new Date(that.data.nowYear, that.data.nowMonth, that.data.nowday).getTime();
+    var selectedTime = new Date(that.data.cur_year, that.data.cur_month-1, date).getTime();
+    if (nowTime > selectedTime || (that.data.nowYear == that.data.cur_year && that.data.nowMonth == that.data.cur_month - 1 && that.data.nowday==date)){  //选择的是相对于当天过去的时间,包括当天
+      wx.navigateTo({
+        url: '../read_history/read_history?date=' + that.data.cur_year + '-' + that.data.cur_month + '-' + date,
+      })
+    }
+  },
   onLoad: function () {
     const date = new Date(); 
     const cur_year = date.getFullYear();  //当前的年份

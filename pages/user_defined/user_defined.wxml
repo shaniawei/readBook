@@ -1,6 +1,20 @@
 <!--pages/user_defined/user_defined.wxml-->
+<import src='../../resource/booklist.wxml' />
 
-<view class='noDefined'>
-  您还没有加入任何书籍到自助计划哦~
+<view wx:if='{{ hasDefined }}' class='noDefined'>
+  <image src='https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=197898622,3000544423&fm=27&gp=0.jpg'></image>
+  <view>
+    您还没有加入任何书籍到自助计划哦~
+  </view>
+  <navigator url='../booklist/booklist' open-type='switchTab' hover-class='none'>
+    <button type='primary'>前往书城选择您喜爱的书籍</button>
+  </navigator>
 </view>
-<button type='primary'></button>
+<view wx:else>
+  <view>您选择的书籍：</view>
+  <template is='defined' data='{{ typeTitle:"穿越小说",booklistdata:booklist1,type:"1"}}' />
+  <template is='defined' data='{{ typeTitle:"畅销小说",booklistdata:booklist2,type:"2"}}' />
+  <navigator url='../booklist/booklist' open-type='switchTab' hover-class='none' class='selectBook'>
+    <button type='primary' class='selectBook'>选书</button>
+  </navigator>
+</view>

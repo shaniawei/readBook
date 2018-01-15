@@ -16,5 +16,5 @@
   -->
 
 <import src='../../resource/booklist.wxml' />
-<template is='booklist' data='{{ typeTitle:"穿越小说",booklistdata:booklist1,type:"1",definedText:definedText}}' wx:if='{{ dataLoadFinish }}' />
-<template is='booklist' data='{{ typeTitle:"畅销小说",booklistdata:booklist2,type:"2",definedText:definedText}}' wx:if='{{ dataLoadFinish }}' />
+<template is='booklist' data='{{ typeTitle:"穿越小说",booklistdata:booklist1,type:"1"}}' wx:if='{{ dataLoadFinish }}' />
+<template is='booklist' data='{{ typeTitle:"畅销小说",booklistdata:booklist2,type:"2"}}' wx:if='{{ dataLoadFinish }}' />

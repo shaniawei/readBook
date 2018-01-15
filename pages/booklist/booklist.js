@@ -5,45 +5,75 @@ Page({
    */
   data: {
     dataLoadFinish:false,
-    count:3,  //初次加载时每一类别显示几本书
-    definedText:'收藏'
+    count:3  //初次加载时每一类别显示几本书
   },
   //加入自助计划
   addDefined:function(e){
     var that=this;
     var CategoryID=e.currentTarget.dataset.id;
     console.log(CategoryID)
-    wx.showModal({
-      title: '加入自助计划',
-      content: '点击收藏，即可加入自助计划',
-      success:function(data){
-        if(data.confirm==true){
-          let Product = new wx.BaaS.TableObject(3974)
-          // 实例化查询对象
-          var query = new wx.BaaS.Query()
-          // 设置查询条件（比较、字符串包含、组合等）
-          query.contains('CategoryID', CategoryID)
-          Product.setQuery(query).find().then((res) => {
-            // success
-            let product = Product.getWithoutData(res.data.objects[0].id)
-            product.set('userDefined', 'true')
+    //先查询被选中的书籍是否已经被加入自助计划
+    let Product = new wx.BaaS.TableObject(3974)
+    // 实例化查询对象
+    var query = new wx.BaaS.Query()
+    // 设置查询条件（比较、字符串包含、组合等）
+    query.contains('CategoryID', CategoryID)
+    Product.setQuery(query).find().then((res) => {
+      // success
+      console.log(res)
+      let product = Product.getWithoutData(res.data.objects[0].id)
+
+      if (res.data.objects[0].userDefined=='true'){ //已被加入自助计划
+        wx.showModal({
+          title: '从自助计划移除',
+          content: '移除后将不显示在今日阅读内',
+          success:function(data){
+            if(data.confirm==true){
+              //确认移除
+              
+              product.set('userDefined', 'false')
               product.update().then((res) => {
                 // success
                 console.log(res)
-                // that.setData({
-                //   definedText:'移除'
-                // })
-
+                that.onLoad()
               }, (err) => {
                 // err
               })
 
-          }, (err) => {
-            // err
-          })
-        }
+            }
+          }
+        })
+      } else if (res.data.objects[0].userDefined == 'false' && res.data.objects[0].givenBook == 'false'){ //未加入自助计划且不属于三本书计划
+        wx.showModal({
+          title: '加入自助计划',
+          content: '点击收藏，即可加入自助计划，显示在今日阅读中',
+          success: function (data) {
+            if (data.confirm == true) {
+                // 确认加入
+                product.set('userDefined', 'true')
+                product.update().then((res) => {
+                  // success
+                  console.log(res)
+                  that.onLoad()
+                }, (err) => {
+                  // err
+                })
+
+            }
+          }
+        })
+      } else if (res.data.objects[0].userDefined == 'false' && res.data.objects[0].givenBook == 'true') {  //未加入自助计划且属于三本书计划
+        wx.showModal({
+          title: '加入自助计划',
+          content: '无法加入自助计划，此书已在每月3本书计划中',
+          showCancel:false
+        })
       }
+    }, (err) => {
+      // err
     })
+
+
   },
   showAll: function (e) {
     var type = e.currentTarget.dataset.type;
@@ -114,6 +144,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    this.getBookList();
   },
 
   /**

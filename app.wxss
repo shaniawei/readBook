@@ -34,6 +34,15 @@ view {
 
 
 /*书籍列表样式  */
+.typeTitle{
+  margin-bottom: 40rpx;
+  border-bottom: 1px solid #ddd;
+  padding: 20rpx 0;
+}
+.typeTitle .showAll{
+  font-size: 32rpx;
+  letter-spacing: 8rpx;
+}
 .bookItem{
   width: 200rpx;
   margin-bottom: 40rpx;
