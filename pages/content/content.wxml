@@ -32,7 +32,7 @@
   </view>
 
   <view wx:if="{{ showSelect }}">
-    <navigator url='../select/select?richTextID={{ detail.richTextID }}&CategoryID={{ CategoryID }}&index={{ index }}&chapterName={{ detail.title }}&bookName={{ bookName }}' open-type='navigate' hover-class='none'>
+    <navigator url='../select/select?richTextID={{ detail.richTextID }}&CategoryID={{ CategoryID }}&index={{ detail.index-1 }}&chapterName={{ detail.title }}&bookName={{ bookName }}' open-type='navigate' hover-class='none'>
       <button type='warn' class='toSelect'>练习</button>
     </navigator>
   </view>

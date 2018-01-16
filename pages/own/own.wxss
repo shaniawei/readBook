@@ -19,7 +19,7 @@
   background-color: green;
 }
 .m3{
-  background-color: blue;
+  background-color: #069cf7;
 }
 .typeSelect{
   margin: 60rpx auto;
@@ -90,7 +90,9 @@
 .box-align-end {
     align-items: flex-end;
 }
-
+.box-margin-bottom{
+  margin-bottom: 15rpx;
+}
 .self-align-center {
     align-self: center;
     margin: 0 auto;
@@ -200,7 +202,7 @@
     color: #fff;
 }
 .pink-bg {
-    background-color: blue;
+    background-color: #069cf7;
 }
 .purple-bg {
     background-color: #b8b8f1;

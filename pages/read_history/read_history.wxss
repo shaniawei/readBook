@@ -3,11 +3,14 @@
   float: left;
 }
 .book-name{
-  padding-right: 40rpx;
-  margin-right: 30rpx;
+  margin-right: 50rpx;
+  font-size: 28rpx;
+  color: #999;
 }
 
-.book-name .item{
-  border-bottom: 1px solid #ddd;
+.book-name .item,.book-chapter .item{
   padding: 20rpx 0;
+}
+.book-name .item.active{
+  color: #000;
 }

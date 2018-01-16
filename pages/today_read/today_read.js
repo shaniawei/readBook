@@ -1,4 +1,4 @@
-var app=getApp()
+var app=getApp()  //小程序实例
 Page({
 
   /**
@@ -10,6 +10,7 @@ Page({
   //获取3本书计划 或者 自助计划 里的书籍列表
   getbookList:function(){
     var that = this;
+    
     let tableID = 3974
     var Product = new wx.BaaS.TableObject(tableID)
 

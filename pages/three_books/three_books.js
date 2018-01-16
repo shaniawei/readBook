@@ -1,3 +1,4 @@
+var app=getApp() //小程序是实例
 Page({
 
   /**
@@ -6,30 +7,21 @@ Page({
   data: {
     dataLoadFinish:false
   },
-  showthreeBooks: function () {
-    var that = this;
-    let tableID = 3974
-    var Product = new wx.BaaS.TableObject(tableID)
-    // 实例化查询对象
-    var query = new wx.BaaS.Query()
-    // 设置查询条件（比较、字符串包含、组合等）
-    query.contains('givenBook', 'true')
-    Product.setQuery(query).find().then((res) => {
-      // success
-      console.log(res.data.objects)
-      that.setData({
-        booklist: res.data.objects,
-        dataLoadFinish:true
-      })
-    }, (err) => {
-      // err
+  //查询成功所做的数据处理
+  handleData:function(data){
+    var that=this
+    that.setData({
+      booklist: data,
+      dataLoadFinish: true
     })
   },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    this.showthreeBooks();
+    var that = this;
+    //查询指定的是那三本书
+    app.findData(3974, 'givenBook', 'true', that.handleData)
   },
 
   /**

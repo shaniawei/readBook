@@ -1,17 +1,21 @@
 <!--pages/read_history/read_history.wxml-->
-<view class='book-name'>
-  <view class='item'>
-    小王子
+
+<view wx:if="{{ historyFall }}">
+  <view class='book-name'>
+    <view wx:for="{{ bookNameList }}" class='item {{ currentType==index+1?"active":"" }}' data-type='{{ index+1 }}' data-bookname='{{ item }}' bindtap='showChapter'>
+      {{ item }}
+    </view>
   </view>
-  <view class='item'>
-    喵喵
+
+  <view class='book-chapter'>
+    <view class='item' wx:for="{{ historyFall }}" wx:if="{{ item.bookName==currentBookName }}">
+      第{{ item.index+1 }}章  {{ item.chapterName }}
+    </view>
   </view>
-  <view class='item'>
-    挪威的森林
-  </view>
+  <view style='clear:both;'></view>
 </view>
-<view class='book-chapter'>
-  <view class='item'>
-    小王子1
-  </view>
+
+<view wx:else>
+  {{ date }}没有阅读记录
 </view>
+

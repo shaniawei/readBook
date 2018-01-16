@@ -9,7 +9,7 @@
 1.分值存在哪里？每个章节存对应的分值，还是给每本书存一个总分值
   -->
 
-<view class='main-select' wx:if='{{ noOrYes }}'>
+<view class='main-select' wx:if='{{ dataLoadFinish }}'>
   <view class='con'>
     <view class='type'>
       单选题
@@ -33,7 +33,7 @@
       <text>{{item.question}}</text>
       <checkbox-group bindchange="checkboxChange" class='select-group'id='{{item.id}}'>
         <label class="checkbox" wx:for="{{item.select}}">
-          <checkbox value="{{item.value}}" checked="{{item.checked}}"/>{{item.name}}
+          <checkbox value="{{item.value}}"/>{{item.name}}
         </label>
       </checkbox-group>
     </view>

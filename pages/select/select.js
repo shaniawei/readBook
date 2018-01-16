@@ -1,23 +1,19 @@
+var app=getApp(); //获取小程序实例
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    mcq:[],   //多选
-    sc:[],    //单选
     totlaScore:0,
-    noOrYes: false,
-    CategoryID:'',
-    index:0,
-    chapterName:'',
-    date: new Date().getFullYear() + '-' + parseInt(new Date().getMonth() + 1) +'-'+new Date().getDate()
+    dataLoadFinish: false,
+    date: new Date().getFullYear() + '-' + parseInt(new Date().getMonth() + 1) +'-'+new Date().getDate() //将做题时间保存在数据表
   },
+  //提交
   applyBtn:function(){
     var that=this;
-    var mcq = this.data.mcq;
-    var arr=this.data.sc.concat(mcq);
-    that.data.totlaScore=0;
+    var arr = that.data.sc.concat(that.data.mcq); //将单选题数组 多选题数组合并
+    that.data.totlaScore=0;                       //初始化得分总分数
     for(var i=0;i<arr.length;i++){
       if (arr[i].beenselected == arr[i].current){
         that.data.totlaScore += arr[i].score
@@ -25,68 +21,19 @@ Page({
       }
     }
     if (that.data.totlaScore >= 40) {  //分数超过40分
-      let Product = new wx.BaaS.TableObject(3974)
-      // 实例化查询对象
-      let query = new wx.BaaS.Query()
-      // 设置查询条件（比较、字符串包含、组合等）
-      query.contains('CategoryID', that.data.CategoryID)
-      Product.setQuery(query).find().then((res) => {
-        // success
-        let product = Product.getWithoutData(res.data.objects[0].id)
-        product.set('today_index', Number(that.data.index))
-        product.update().then((res) => {
-          // success
-          console.log(res)
-          product.set('chapterName', that.data.chapterName)
-          product.update().then((res) => {
-            // success
-            console.log(res)
+      //查询book数据表，更新today_index和chapterName字段
+      app.findData(3974, 'CategoryID', that.data.CategoryID, app.updateData, 'update', 
+      [{ 'today_index': Number(that.data.index) }, { 'chapterName': that.data.chapterName}])
 
-          }, (err) => {
-            // err
-            
-          })
-        }, (err) => {
-          // err
-          console.log(err)
-        })
+      //查询history_fall表，将章节数据存入数据表
+      app.findData(22303, 'chapterName', that.data.chapterName, app.addData, 'add', {
+        date: that.data.date,
+        bookName: that.data.bookName,
+        chapterName: that.data.chapterName,
+        index: that.data.index
       })
 
-      //将章节数据存入数据表 start
-      let ProductFall = new wx.BaaS.TableObject(22303)
-      // 实例化查询对象
-      let queryFall = new wx.BaaS.Query()
-      // 设置查询条件（比较、字符串包含、组合等）
-      queryFall.contains('chapterName', that.data.chapterName)
-      ProductFall.setQuery(queryFall).find().then((res) => {
-        // success
-        console.log(res)
-        if(res.data.objects.length==0){  //没有数据时存入
-          let product = ProductFall.create()
-
-          // 设置方式一
-          let dataFall = {
-            date: that.data.date,
-            bookName: that.data.bookName,
-            chapterName: that.data.chapterName,
-            index: that.data.index
-          }
-          product.set(dataFall).save().then((res) => {
-            // success
-            console.log(666)
-            console.log(res)
-          }, (err) => {
-            // err
-          })
-        }else {  //已经做了一遍达到 40分 以上，但用户又做了一遍 同时达到 40分 以上 分值不一样
-
-        }
-      }, (err) => {
-        // err
-      })
-      //将章节数据存入数据表 end
-
-      that.data.totlaScore = that.data.totlaScore.toString();
+      that.data.totlaScore = that.data.totlaScore.toString();  //将最后得分值转化为字符串
       wx.showModal({
         title: '您的总分数是',
         content: that.data.totlaScore,
@@ -120,6 +67,7 @@ Page({
     }
     
   },
+  //单选处理函数
   radioChange: function (e) {
     var _this = this; //获得page实例
     var id = e.target.id; //获得发生事件的对象
@@ -131,6 +79,7 @@ Page({
     }
     
   },
+  //多选处理函数
   checkboxChange:function(e){
     var _this = this;
     var id = e.target.id;
@@ -142,53 +91,42 @@ Page({
       }
     }
   },
+  //查询成功后进行的显示数据处理
+  showSelectData:function(data){
+    var that=this;
+    var path = data[0].path.cdn_path;  //文件路径
+    wx.request({
+      url: 'https://cloud-minapp-8044.cloud.ifanrusercontent.com/' + path,
+      header: {
+        'content-type': 'application/json'
+      },
+      success: function (res) {
+        console.log(res.data)
+        that.setData({
+          mcq: res.data.mcq, //多选
+          sc: res.data.sc,   //单选
+          dataLoadFinish: true      //条件渲染
+        })
+        console.log(that.data.mcq)
+        console.log(that.data.sc)
+      }
+    })
+  },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    console.log(333)
+    var that = this;                     //获取page实例
     var richTextID = options.richTextID  //章节id
     this.setData({
       richTextID: options.richTextID,
       CategoryID: options.CategoryID,
-      index: options.index,
+      index: Number(options.index),
       chapterName: options.chapterName,
       bookName: options.bookName
-    })
-    var that = this;                     //获取page实例
-    // 实例化查询对象
-    var query = new wx.BaaS.Query()
-    //查询条件
-    query.contains('richTextID', richTextID)
-
-    var tableID = 4059
-    var Product = new wx.BaaS.TableObject(tableID)
-    Product.setQuery(query).find().then((res) => {
-      //success
-      console.log(res.data.objects)
-
-      var path = res.data.objects[0].path.cdn_path;  //文件路径
-      wx.request({
-        url: 'https://cloud-minapp-8044.cloud.ifanrusercontent.com/'+path, 
-        header: {
-          'content-type': 'application/json'
-        },
-        success: function (res) {
-          console.log(res.data)
-
-          that.setData({
-            mcq:res.data.mcq,
-            sc:res.data.sc,
-            noOrYes:true
-          })
-          console.log(that.data.mcq)
-          console.log(that.data.sc)
-        }
-      })
-    }, (res) => {
-      //error
-    }
-    )
+    }) 
+    //查询对应章节的选择题数据
+    app.findData(4059, 'richTextID', richTextID, that.showSelectData)
   },
 
   /**

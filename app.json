@@ -1,10 +1,11 @@
 {
   "pages": [
-    "pages/own/own",
     "pages/booklist/booklist",
-    "pages/user_defined/user_defined",
+    "pages/own/own",
     
+    "pages/user_defined/user_defined",
     "pages/read_history/read_history",
+    
     "pages/today_read/today_read",
     "pages/study_plan/study_plan",
     "pages/bookcase/bookcase",

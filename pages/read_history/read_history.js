@@ -1,31 +1,51 @@
 // pages/read_history/read_history.js
+var app=getApp() //获取小程序实例
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-  
+    currentType:'1' //判断选择的是那本书，加上active类
   },
-
-  /**
+  //显示书籍对应的章节
+  showChapter:function(e){
+    var chapterType=e.currentTarget.dataset.type;
+    var bookname = e.currentTarget.dataset.bookname;
+    this.setData({
+      currentType: chapterType,
+      currentBookName: bookname
+    })
+    console.log(chapterType,bookname)
+  },
+  //查询成功后所做的处理
+  handleData:function(data){
+    var that=this;
+    var bookNameList = []; //书籍名称列表
+    if (data && data.length !== 0) {
+      for (var i = 0; i < data.length; i++) {
+        bookNameList.push(data[i].bookName);
+      }
+      bookNameList = Array.from(new Set(bookNameList))
+      console.log(bookNameList)
+      that.setData({
+        historyFall: data,
+        bookNameList: bookNameList,
+        currentBookName: bookNameList[0]
+      })
+    }
+  },
+    /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    var date=options.date;
-    console.log(date)
-    // 应用查询对象
-    var Product = new wx.BaaS.TableObject(22303)
-    // 实例化查询对象
-    var query = new wx.BaaS.Query()
-    // 设置查询条件（比较、字符串包含、组合等）
-    query.contains('date', date)
-    Product.setQuery(query).find().then((res) => {
-        // success
-        console.log(res)
-    }, (err) => {
-      // err
+    var that=this;
+    var date=options.date; //获取用户选择的时间
+    console.log(date) 
+    that.setData({
+      date
     })
+    app.findData(22303,'date',date,that.handleData)
   },
 
   /**

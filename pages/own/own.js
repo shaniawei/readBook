@@ -1,6 +1,10 @@
 // clock.js
 'use strict';
 var app = getApp();  //小程序实例
+var nowYear= new Date().getFullYear()
+var nowMonth= new Date().getMonth()
+var nowday= new Date().getDate()
+var nowTime = new Date(nowYear, nowMonth, nowday);
 Page({
   /**
    * 页面的初始数据
@@ -8,10 +12,7 @@ Page({
   data: {
     hasEmptyGrid: false,  //是否显示空白区域
     startDate:'2000-01-01',
-    endDate:'2020-01-01',
-    nowYear: new Date().getFullYear(),
-    nowMonth: new Date().getMonth(),
-    nowday:new Date().getDate()
+    endDate:'2020-01-01'
   },
   /**
    * 生命周期函数--监听页面加载
@@ -20,13 +21,51 @@ Page({
   viewHistoryFall:function(e){
     var that=this;
     var date = parseInt(e.currentTarget.dataset.idx)+1;  //被选中的是哪一天
-    var nowTime = new Date(that.data.nowYear, that.data.nowMonth, that.data.nowday).getTime();
-    var selectedTime = new Date(that.data.cur_year, that.data.cur_month-1, date).getTime();
-    if (nowTime > selectedTime || (that.data.nowYear == that.data.cur_year && that.data.nowMonth == that.data.cur_month - 1 && that.data.nowday==date)){  //选择的是相对于当天过去的时间,包括当天
+    var selectedTime = new Date(that.data.cur_year, that.data.cur_month-1, date);
+    if (nowTime >= selectedTime && selectedTime >= new Date(2017, 11, 21)){  //选择的是相对于当天过去的时间,包括当天
       wx.navigateTo({
         url: '../read_history/read_history?date=' + that.data.cur_year + '-' + that.data.cur_month + '-' + date,
       })
     }
+  },
+  judgeDate:function(){  //判断显示的某年某月某日 是否完成读书任务
+    var that=this;
+    var regDate = new RegExp(that.data.cur_year + '-' + that.data.cur_month + '-' + '([\\d]{1,2})')
+    console.log(regDate)
+    // 应用查询对象
+    var Product = new wx.BaaS.TableObject(22303)
+    // 实例化查询对象
+    var query = new wx.BaaS.Query()
+    // 设置查询条件（比较、字符串包含、组合等）
+    query.matches('date', regDate)
+    Product.setQuery(query).find().then((res) => {
+      // success
+      console.log(res.data.objects)
+      var dateArr=[]  
+      const days = that.data.days; 
+      for (var i = 0; i < res.data.objects.length;i++){
+        var d = Number((res.data.objects[i].date.match(regDate))[1])-1;
+        console.log(d)
+        dateArr.push(d)
+                   //当月多少天
+        days[d].dategreen = !days[d].dategreen;
+        that.setData({
+          days,
+        });
+      }
+      console.log(dateArr)
+      for (var i = 0; i < days.length; i++) {
+        var showdate = new Date(that.data.cur_year, that.data.cur_month - 1,i+1)
+        if (showdate >= new Date(2017, 11, 21) && showdate < nowTime) {
+          days[i].dategray = !days[i].dategray
+          that.setData({
+            days
+          })
+      }
+    }
+    }, (err) => {
+      // err
+    })
   },
   onLoad: function () {
     const date = new Date(); 
@@ -41,6 +80,7 @@ Page({
       weeks_ch
     });
     this.tapDayItem();
+    this.judgeDate()
   },
   //日期高亮显示
   tapDayItem() {
@@ -88,7 +128,9 @@ Page({
     for (let i = 1; i <= thisMonthDays; i++) {
       days.push({
         day: i,
-        choosed: false
+        choosed: false,
+        dategreen:false,
+        dategray:false
       });
     }
     this.setData({
@@ -117,6 +159,7 @@ Page({
         cur_month: newMonth
       });
       this.tapDayItem();
+      this.judgeDate()
 
     } else {  //往左  下个月
       let newMonth = cur_month + 1;
@@ -134,6 +177,7 @@ Page({
         cur_month: newMonth
       });
       this.tapDayItem();
+      this.judgeDate()
     }
   },
   //选择年月
@@ -148,6 +192,7 @@ Page({
       cur_month: new_month
     })
     this.tapDayItem();
+    this.judgeDate()
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

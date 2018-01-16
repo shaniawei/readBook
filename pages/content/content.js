@@ -215,7 +215,7 @@ Page({
             date: that.data.date,
             bookName: that.data.bookName,
             chapterName: that.data.detail.title,
-            index: (that.data.detail.index-1).toString()
+            index: that.data.detail.index-1
           }
           product.set(dataFall).save().then((res) => {
             // success

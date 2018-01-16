@@ -128,6 +128,8 @@ Page({
     var that=this;
     wx.getUserInfo({
       success: function (res) {
+        console.log(res.userInfo)
+        
         that.getBookList();
       }
     })

@@ -41,7 +41,7 @@
 
         <!--星期  -->
         <view class="weeks box box-lr box-pack-center box-align-center">
-            <view class="flex week fs28" wx:for="{{weeks_ch}}" wx:key="{{index}}" data-idx="{{index}}">{{item}}</view>
+            <view class="flex week fs28 box-margin-bottom" wx:for="{{weeks_ch}}" wx:key="{{index}}" data-idx="{{index}}">{{item}}</view>
         </view>
 
         <view class="days box box-lr box-wrap">
@@ -49,9 +49,9 @@
             <view wx:if="{{hasEmptyGrid}}" class="grid white-color box box-align-center box-pack-center" wx:for="{{empytGrids}}" wx:key="{{index}}" data-idx="{{index}}">
             </view>
 
-            <view class="grid white-color box box-align-center box-pack-center" wx:for="{{days}}" wx:key="{{index}}" 
+            <view class="grid white-color box box-align-center box-pack-center box-margin-bottom" wx:for="{{days}}" wx:key="{{index}}" 
             data-idx="{{index}}" bindtap='viewHistoryFall'>
-                <view class="day {{item.choosed ? 'border-radius pink-bg' : ''}} box box-align-center box-pack-center">{{item.day}}                     </view>
+                <view class="day {{item.choosed ? 'border-radius pink-bg' : ''}} {{ item.dategreen?'border-radius m2': '' }} {{ item.dategray?'border-radius m1': '' }} box box-align-center box-pack-center">{{item.day}}                     </view>
             </view>
 
         </view>
