@@ -116,7 +116,6 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    var that = this;                     //获取page实例
     var richTextID = options.richTextID  //章节id
     this.setData({
       richTextID: options.richTextID,
@@ -126,7 +125,7 @@ Page({
       bookName: options.bookName
     }) 
     //查询对应章节的选择题数据
-    app.findData(4059, 'richTextID', richTextID, that.showSelectData)
+    app.findData(4059, 'richTextID', richTextID, this.showSelectData)
   },
 
   /**

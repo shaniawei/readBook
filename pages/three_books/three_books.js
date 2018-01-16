@@ -9,8 +9,7 @@ Page({
   },
   //查询成功所做的数据处理
   handleData:function(data){
-    var that=this
-    that.setData({
+    this.setData({
       booklist: data,
       dataLoadFinish: true
     })
@@ -19,9 +18,8 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    var that = this;
     //查询指定的是那三本书
-    app.findData(3974, 'givenBook', 'true', that.handleData)
+    app.findData(3974, 'givenBook', 'true', this.handleData)
   },
 
   /**

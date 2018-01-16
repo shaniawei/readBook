@@ -39,13 +39,12 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    var that=this;
     var date=options.date; //获取用户选择的时间
     console.log(date) 
-    that.setData({
+    this.setData({
       date
     })
-    app.findData(22303,'date',date,that.handleData)
+    app.findData(22303,'date',date,this.handleData)
   },
 
   /**
