@@ -13,11 +13,18 @@ Page({
       booklist: data,
       dataLoadFinish: true
     })
+    wx.hideLoading()
   },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.showLoading({
+      title: '加载中',
+    })
+    this.setData({
+      booklist:[]
+    })
     //获取3本书计划 或者 自助计划 里的书籍列表
     app.findData(3974, undefined, undefined, this.handleData, undefined, undefined, true, 
     [{ 'givenBook': 'true' }, { 'userDefined': 'true' }], false)

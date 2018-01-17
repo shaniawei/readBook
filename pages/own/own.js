@@ -1,98 +1,85 @@
 // clock.js
 'use strict';
 var app = getApp();  //小程序实例
-var nowYear= new Date().getFullYear()
-var nowMonth= new Date().getMonth()
-var nowday= new Date().getDate()
-var nowTime = new Date(nowYear, nowMonth, nowday);
+const date = new Date();
+const now_year = date.getFullYear();  //当前的年份
+const now_month = date.getMonth() + 1; //当前的月份
+const now_date = date.getDate();
+const now_time = new Date(now_year, now_month - 1, now_date);
+const weeks_ch = ['一', '二', '三', '四', '五', '六', '日'];
 Page({
   /**
    * 页面的初始数据
    */
   data: {
     hasEmptyGrid: false,  //是否显示空白区域
-    startDate:'2000-01-01',
-    endDate:'2020-01-01'
+    startDate:'2000-01-01',  //选择日期的开始时间
+    endDate:'2020-01-01'     //选择日期的结束时间
   },
-  /**
-   * 生命周期函数--监听页面加载
-   */
+
   //跳转至阅读历史流水中
   viewHistoryFall:function(e){
-    var that=this;
     var date = parseInt(e.currentTarget.dataset.idx)+1;  //被选中的是哪一天
-    var selectedTime = new Date(that.data.cur_year, that.data.cur_month-1, date);
-    if (nowTime >= selectedTime && selectedTime >= new Date(2017, 11, 21)){  //选择的是相对于当天过去的时间,包括当天
+    var selectedTime = new Date(this.data.cur_year, this.data.cur_month-1, date);
+    if (now_time >= selectedTime && selectedTime >= new Date(2017, 11, 21)){  //选择的是相对于当天过去的时间,包括当天
       wx.navigateTo({
-        url: '../read_history/read_history?date=' + that.data.cur_year + '-' + that.data.cur_month + '-' + date,
+        url: '../read_history/read_history?date=' + this.data.cur_year + '-' + this.data.cur_month + '-' + date,
       })
     }
   },
-  judgeDate:function(){  //判断显示的某年某月某日 是否完成读书任务
-    var that=this;
-    var regDate = new RegExp(that.data.cur_year + '-' + that.data.cur_month + '-' + '([\\d]{1,2})')
-    console.log(regDate)
-    // 应用查询对象
-    var Product = new wx.BaaS.TableObject(22303)
-    // 实例化查询对象
-    var query = new wx.BaaS.Query()
-    // 设置查询条件（比较、字符串包含、组合等）
-    query.matches('date', regDate)
-    Product.setQuery(query).find().then((res) => {
-      // success
-      console.log(res.data.objects)
-      var dateArr=[]  
-      const days = that.data.days; 
-      for (var i = 0; i < res.data.objects.length;i++){
-        var d = Number((res.data.objects[i].date.match(regDate))[1])-1;
-        console.log(d)
-        dateArr.push(d)
-                   //当月多少天
-        days[d].dategreen = !days[d].dategreen;
-        that.setData({
-          days,
-        });
-      }
-      console.log(dateArr)
-      for (var i = 0; i < days.length; i++) {
-        var showdate = new Date(that.data.cur_year, that.data.cur_month - 1,i+1)
-        if (showdate >= new Date(2017, 11, 21) && showdate < nowTime) {
-          days[i].dategray = !days[i].dategray
-          that.setData({
-            days
-          })
-      }
-    }
-    }, (err) => {
-      // err
-    })
-  },
+    /**
+   * 生命周期函数--监听页面加载
+   */
   onLoad: function () {
-    const date = new Date(); 
-    const cur_year = date.getFullYear();  //当前的年份
-    const cur_month = date.getMonth() + 1; //当前的月份
-    const weeks_ch = ['一', '二', '三', '四', '五', '六', '日'];
-    this.calculateEmptyGrids(cur_year, cur_month);
-    this.calculateDays(cur_year, cur_month);
+    this.calculateEmptyGrids(now_year, now_month);
+    this.calculateDays(now_year, now_month);
     this.setData({
-      cur_year,
-      cur_month,
+      cur_year: now_year,
+      cur_month: now_month,
       weeks_ch
     });
-    this.tapDayItem();
+    this.judgeToday();
     this.judgeDate()
   },
-  //日期高亮显示
-  tapDayItem() {
-    if (this.data.cur_year == new Date().getFullYear() && this.data.cur_month == new Date().getMonth()+1){
-      console.log(222)
-      const idx = new Date().getDate() - 1;   //当天是几号 在此基础上减1
-      const days = this.data.days;            //当月多少天
-      days[idx].choosed = !days[idx].choosed;
+  //将 今日 日期背景显示为浅蓝色
+  judgeToday() {
+    if (this.data.cur_year == now_year && this.data.cur_month == now_month){
+      var idx = now_date - 1;   //当天是几号 在此基础上减1
+      var days = this.data.days;            //当月多少天
+      days[idx].dateblue = !days[idx].dateblue;
       this.setData({
         days,
       });
     }    
+  },
+  //判断日期显示灰色背景还是绿色背景
+  judgeDate: function () {  //判断显示的某年某月某日 是否完成读书任务
+    var regDate = new RegExp(this.data.cur_year + '-' + this.data.cur_month + '-' + '([\\d]{1,2})')  //按日期筛选的 正则表达式
+    console.log(regDate)
+    app.findData(22303, 'date', regDate,this.highColor)
+  },
+  //查询成功后的数据处理函数
+  highColor: function (data, regDate){
+    var dateArr = [] //某年某月 完成任务的日期数组
+    var days = this.data.days;
+    for (var i = 0; i < data.length; i++) {
+      var d = Number((data[i].date.match(regDate))[1]) - 1;//获取到 有阅读历史的日期 并把日期转化为在days中的索引号
+      dateArr.push(d)
+    }
+    dateArr = Array.from(new Set(dateArr))   //去重
+    for (var i = 0; i < days.length; i++) {
+      var showdate = new Date(this.data.cur_year, this.data.cur_month - 1, i + 1)  //当前用户想要显示的年月日
+      if (showdate >= new Date(2017, 11, 21) && showdate < now_time) {  //将会显示高亮颜色的日期限定在 用户最开始使用小程序的时间 至 今日
+        if (dateArr.indexOf(i)>-1){
+          days[i].dategreen = !days[i].dategreen;
+        }else{
+          days[i].dategray = !days[i].dategray
+        }
+      }
+    }
+    this.setData({
+      days
+    })
   },
   getThisMonthDays(year, month) {
     return new Date(year, month, 0).getDate(); //这里的month是当前准确的month 返回当前的天数
@@ -128,7 +115,7 @@ Page({
     for (let i = 1; i <= thisMonthDays; i++) {
       days.push({
         day: i,
-        choosed: false,
+        dateblue: false,
         dategreen:false,
         dategray:false
       });
@@ -158,7 +145,7 @@ Page({
         cur_year: newYear,
         cur_month: newMonth
       });
-      this.tapDayItem();
+      this.judgeToday();
       this.judgeDate()
 
     } else {  //往左  下个月
@@ -176,7 +163,7 @@ Page({
         cur_year: newYear,
         cur_month: newMonth
       });
-      this.tapDayItem();
+      this.judgeToday();
       this.judgeDate()
     }
   },
@@ -191,7 +178,7 @@ Page({
       cur_year: new_year,
       cur_month: new_month
     })
-    this.tapDayItem();
+    this.judgeToday();
     this.judgeDate()
   },
   /**

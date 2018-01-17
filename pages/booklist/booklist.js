@@ -78,8 +78,7 @@ Page({
   showAll: function (e) {
     var type = e.currentTarget.dataset.type;
     var that = this;
-    var tableID = 3974
-    var Product = new wx.BaaS.TableObject(tableID)
+    var Product = new wx.BaaS.TableObject(3974)
     // 实例化查询对象
     var query = new wx.BaaS.Query()
     // 设置查询条件（比较、字符串包含、组合等）
@@ -98,9 +97,8 @@ Page({
   // 获取书籍列表
   getBookList:function(){
     var that=this;
-    var count = that.data.count;  //初次加载时每一类别显示几本书
-    let tableID = 3974
-    var Product = new wx.BaaS.TableObject(tableID)
+    var count = that.data.count;  //初次加载时每一类别显示几本书 
+    var Product = new wx.BaaS.TableObject(3974)
     for(var i=1;i<=2;i++){  //i值指 数据表里的type值
       let index=i;  //临时保存type值
       // 实例化查询对象
@@ -120,11 +118,15 @@ Page({
         // err
       })
     }
+    wx.hideLoading()
   },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.showLoading({
+      title: '加载中',
+    })
     var that=this;
     wx.getUserInfo({
       success: function (res) {

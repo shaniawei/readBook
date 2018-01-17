@@ -22,7 +22,7 @@
 
 <import src="../../wxParser/index.wxml"/>
 
-<view wx:if="{{ noOrYes }}">
+<view wx:if="{{ dataLoadFinish }}">
   <view class='title'>第{{ detail.index }}章</view>
 
   <view class='title'>{{ detail.title }}</view>

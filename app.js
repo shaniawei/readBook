@@ -33,8 +33,13 @@ App({
     }else{
       // 实例化查询对象
       var query = new wx.BaaS.Query()
-      // 设置查询条件（比较、字符串包含、组合等）
-      query.contains(condition, conditionCon)
+      if (Object.prototype.toString.call(conditionCon).slice(8, -1) =='RegExp'){  //正则表达式
+        // 设置查询条件（比较、字符串包含、组合等）
+        query.matches(condition, conditionCon)
+      }else{
+        // 设置查询条件（比较、字符串包含、组合等）
+        query.contains(condition, conditionCon)
+      }
     }
   
     Product.setQuery(query).find().then((res) => {
@@ -48,7 +53,7 @@ App({
         cb && cb(res.data.objects, Product, dataGroup);
         return
       }
-      cb && cb(res.data.objects)
+      cb && cb(res.data.objects, conditionCon)
     }, (err) => {
       // err
     })
