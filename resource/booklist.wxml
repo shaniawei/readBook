@@ -1,14 +1,15 @@
+<!--书城  -->
 <template name='booklist'>
-  <view class='typeList'>
+  <view class='typeList' wx:if='{{ booklistdata[2] }}'>
   
     <view class='typeTitle clearfix'>
       <text>{{ typeTitle }}</text>
-      <view class='showAll fl-r' bindtap='showAll' data-type='{{ type }}'>全部</view>
+      <view class='showAll fl-r' bindtap='showAll' data-type='{{ type }}' wx:if='{{ booklistdata[1]>count }}'>{{ booklistdata[3]==booklistdata[1]?'收起':'全部' }}</view>
     </view>
 
     <view class='content'>
 
-      <view class='bookItem' wx:for='{{ booklistdata }}' id='{{ item.CategoryID }}'>
+      <view class='bookItem' wx:for='{{ booklistdata[0] }}' wx:if='{{ index<booklistdata[3] }}' id='{{ item.CategoryID }}'>
         <text class='own-defined' data-id='{{ item.CategoryID }}' bindtap='addDefined' wx:if='{{ item.givenBook=="false"?true:false }}'>{{ item.userDefined=='false'?'收藏':'移除' }}</text>
         <navigator url='../content/content?CategoryID={{ item.CategoryID }}&showSelect=false&isToday=false' open-type='navigate' hover-class='none'>
           <image src='{{item.img}}'></image>
@@ -21,6 +22,9 @@
     
   </view>
 
+
+
+<!--自助计划  -->
 </template>
 <template name='defined'>
   <view class='typeList' wx:if='{{ booklistdata }}'>

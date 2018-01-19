@@ -5,7 +5,7 @@
     
     "pages/user_defined/user_defined",
     "pages/read_history/read_history",
-    
+    "pages/catalog/catalog",
     "pages/today_read/today_read",
     "pages/study_plan/study_plan",
     "pages/bookcase/bookcase",

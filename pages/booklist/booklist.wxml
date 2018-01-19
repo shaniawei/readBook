@@ -1,20 +1,16 @@
 <!--按类别查询书籍列表赋值给每一类对应的booklist 使用模板进行对应的循环渲染
 需要优化的地方：
-1.显示全部 是否可以做成类似动画的下拉显示
-2.显示全部后 是否需要替换成一个 收起 的按钮 或者隐藏显示全部按钮 
-3.点击 穿越小说 显示全部后 再点击 畅销小说 显示全部 是否需要同时收起 穿越小说
-
-问题：
-1.点击书籍进行阅读 是否需要记录阅读位置  --目前是记录的
-2.阅读过的书籍是否需要加入到历史记录中  --目前是加入的
+1.点击 穿越小说 显示全部后 再点击 畅销小说 显示全部 是否需要同时收起 穿越小说
+2.目前的分类渲染还存在问题 假设数据表增加了一个分类 那么还需要修改js文件内的一些值才可以加载出来 这样不合理
 
 功能：
-1.点击 全部 可显示此类别所有书目
+1.点击 全部/收起 可显示此类别所有书目/仅显示3本书
 2.点击书名/封面图 进行阅读 不做任何选择题跳转功能 仅供阅读
 3.点击书名/封面图 进行阅读 将此书加入到 书架 历史记录 中 且记录阅读位置
-
+4.目前限定显示的书籍是每类3本 ，假设其中一类至多3本书籍 不显示 全部/收起 按钮
+5.书籍封面图上 收藏/移除按钮 用于加入自助计划或者从自助计划移除
   -->
 
 <import src='../../resource/booklist.wxml' />
-<template is='booklist' data='{{ typeTitle:"穿越小说",booklistdata:booklist1,type:"1"}}' wx:if='{{ dataLoadFinish }}' />
-<template is='booklist' data='{{ typeTitle:"畅销小说",booklistdata:booklist2,type:"2"}}' wx:if='{{ dataLoadFinish }}' />
+<template is='booklist' data='{{ typeTitle:"穿越小说",booklistdata:booklist1,type:"1",count:count}}' />
+<template is='booklist' data='{{ typeTitle:"畅销小说",booklistdata:booklist2,type:"2",count:count}}' />

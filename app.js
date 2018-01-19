@@ -16,7 +16,7 @@ App({
     if (moreCondition==true){ //组合查询 支持两个查询条件的这查询
       var firstCondition = Object.keys(moreConditionCon[0])[0]  //组合查询的第一项键
       var firstConditionCon = moreConditionCon[0][firstCondition]
-      var secondCondition = Object.keys(moreConditionCon[1])[0]  //组合查询的第一项键
+      var secondCondition = Object.keys(moreConditionCon[1])[0]  //组合查询的第二项键
       var secondConditionCon = moreConditionCon[1][secondCondition]
       // 实例化查询对象
       var query1 = new wx.BaaS.Query()  //3本书计划的
@@ -53,13 +53,13 @@ App({
         cb && cb(res.data.objects, Product, dataGroup);
         return
       }
-      cb && cb(res.data.objects, conditionCon)
+      cb && cb(res.data.objects, conditionCon, Product)        //日期的正则查询添加的第二个参数 第三个参数是指应用对象实例
     }, (err) => {
       // err
     })
   },
   //更新数据
-  updateData: function (data, ProductName, updateData){
+  updateData: function (data, ProductName, updateData,cb){
     //ProductName指应用名，data指需要更新的数据，updataField指更新数据组  最多更新两组数据
     var that=this;
     var product = ProductName.getWithoutData(data[0].id)
@@ -78,6 +78,10 @@ App({
         }, (err) => {
           // err
         })
+      }
+
+      if(cb){  //书城 收藏/移除自助计划时更新页面信息
+        cb();
       }
 
     }, (err) => {

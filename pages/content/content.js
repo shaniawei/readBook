@@ -11,26 +11,7 @@ Page({
     dataLoadFinish:false,
     index:0,
     showSelect:false,
-    showCatalog:false,
     date: new Date().getFullYear() + '-' + parseInt(new Date().getMonth() + 1) + '-' + new Date().getDate()
-  },
-  //显示目录结构
-  showCatalog:function(){
-    this.setData({
-      showCatalog:true
-    })
-    wx.pageScrollTo({
-      scrollTop: 0,
-    })
-  },
-  //显示对应的章节内容
-  showContent:function(e){
-    var index=e.currentTarget.dataset.index;
-    var id = e.currentTarget.dataset.id;
-    this.getDetail(id,index);
-    this.setData({
-      showCatalog:false
-    })
   },
   //获取CategoryID类里的内容列表
   getChapter: function (id) {
@@ -42,6 +23,10 @@ Page({
       that.setData({
         chapterList: res.data.objects  //每本书的章节列表
       });
+      wx.setStorage({
+        key: 'chapterList',
+        data: JSON.stringify(that.data.chapterList),
+      })
       that.getDetail(that.data.chapterList[that.data.index].id, that.data.index)
     }, (err) => {
       // err
@@ -118,16 +103,32 @@ Page({
     wx.showLoading({
       title: '加载中',
     })
-    var CategoryID = options.CategoryID;  //书籍id
-    var showSelect = options.showSelect.indexOf('false')>-1?false:true  //是否显示选择题跳转按钮标记
-    var isToday = options.isToday //判断阅读入口是不是 今日阅读
-    this.setData({
-      CategoryID: CategoryID,
-      showSelect: showSelect,
-      isToday
-    })
-    //查询这本书籍的数据行 对应的today_index或者是other_index
-    app.findData(3974, 'CategoryID', CategoryID, this.findIndex)
+    if (options.catalog=='true'){  //从目录点击进入
+      console.log(this.data.detail.richTextID)
+      this.setData({
+        catalog: options.catalog,
+        showSelect: wx.getStorageSync('showSelect'),
+        isToday: wx.getStorageSync('isToday'),
+        CategoryID: wx.getStorageSync('CategoryID'),
+      })
+      this.getDetail(options.richTextID, Number(options.index))
+    }else{
+      var CategoryID = options.CategoryID;  //书籍id
+      var showSelect = options.showSelect.indexOf('false') > -1 ? false : true  //是否显示选择题跳转按钮标记
+      var isToday = options.isToday //判断阅读入口是不是 今日阅读
+      this.setData({
+        CategoryID: CategoryID,
+        showSelect: showSelect,
+        isToday
+      })
+      //保存数据
+      wx.setStorageSync('CategoryID', CategoryID)
+      wx.setStorageSync('showSelect', showSelect)
+      wx.setStorageSync('isToday', isToday)
+      //查询这本书籍的数据行 对应的today_index或者是other_index
+      app.findData(3974, 'CategoryID', CategoryID, this.findIndex)
+    }
+    
   },
   //查询成功后所做的数据处理 
   findIndex: function (data){
@@ -147,6 +148,7 @@ Page({
       this.setData({   //判断这本书籍有没有选择题
         showSelect: data[0].hasSelect
       })
+      wx.setStorageSync('showSelect', data[0].hasSelect)
     }else{
       if (data[0].other_index == undefined) {  //没看过这本书
         console.log('没有阅读过 --图书馆')
@@ -184,12 +186,18 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {   //离开的时候看的是哪本书哪一章 记录下来
-    var isToday = this.data.isToday
+    if (this.data.catalog=='true'){
+      var isToday = wx.getStorageSync('isToday')
+      var CategoryID = wx.getStorageSync('CategoryID') //书籍id
+    }else{
+      var isToday = this.data.isToday
+      var CategoryID = this.data.CategoryID //书籍id
+    }
+    
     var index = this.data.detail.index - 1  //正在阅读的章节索引
     console.log(index)
-    var CategoryID = this.data.CategoryID //书籍id
     if (isToday=='true'){  //阅读入口是 今日阅读
-      if (this.data.showSelect == false) {  //没有选择题的书籍离开记录
+      if (wx.getStorageSync('showSelect') == false) {  //没有选择题的书籍离开记录
         console.log(7777)
         //将章节数据存入数据表
         app.findData(22303, 'chapterName', this.data.detail.title, app.addData, 'add', {
@@ -205,6 +213,7 @@ Page({
       
     }else{ //阅读入口 书城
       //更新数据表里other_index字段 保存阅读位置
+      console.log(CategoryID)
       app.findData(3974, 'CategoryID', CategoryID, app.updateData, 'update',
         [{ 'other_index': index}])
     }

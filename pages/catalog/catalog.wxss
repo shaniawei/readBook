@@ -1,0 +1,11 @@
+/* pages/catalog/catalog.wxss */
+
+.cataLog .item{
+  border-bottom: 1px solid #ddd;
+  padding: 20rpx;
+  box-sizing: border-box;
+}
+
+.cataLog .item text:nth-child(1){
+  margin-right: 60rpx;
+}

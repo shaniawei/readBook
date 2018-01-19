@@ -1,123 +1,80 @@
+var app=getApp(); //小程序实例
 Page({
-
   /**
    * 页面的初始数据
    */
   data: {
-    dataLoadFinish:false,
-    count:3  //初次加载时每一类别显示几本书
+    count:3,  //初次加载时显示3本书
+    typeCount:3 //书籍分类的代表数字 这里指的是最大的代表数字
   },
   //加入自助计划
-  addDefined:function(e){
-    var that=this;
-    var CategoryID=e.currentTarget.dataset.id;
+  addDefined: function (e) {
+    var CategoryID = e.currentTarget.dataset.id;
     console.log(CategoryID)
     //先查询被选中的书籍是否已经被加入自助计划
-    let Product = new wx.BaaS.TableObject(3974)
-    // 实例化查询对象
-    var query = new wx.BaaS.Query()
-    // 设置查询条件（比较、字符串包含、组合等）
-    query.contains('CategoryID', CategoryID)
-    Product.setQuery(query).find().then((res) => {
-      // success
-      console.log(res)
-      let product = Product.getWithoutData(res.data.objects[0].id)
-
-      if (res.data.objects[0].userDefined=='true'){ //已被加入自助计划
-        wx.showModal({
-          title: '从自助计划移除',
-          content: '移除后将不显示在今日阅读内',
-          success:function(data){
-            if(data.confirm==true){
-              //确认移除
-              
-              product.set('userDefined', 'false')
-              product.update().then((res) => {
-                // success
-                console.log(res)
-                that.onLoad()
-              }, (err) => {
-                // err
-              })
-
-            }
-          }
-        })
-      } else if (res.data.objects[0].userDefined == 'false' && res.data.objects[0].givenBook == 'false'){ //未加入自助计划且不属于三本书计划
-        wx.showModal({
-          title: '加入自助计划',
-          content: '点击收藏，即可加入自助计划，显示在今日阅读中',
-          success: function (data) {
-            if (data.confirm == true) {
-                // 确认加入
-                product.set('userDefined', 'true')
-                product.update().then((res) => {
-                  // success
-                  console.log(res)
-                  that.onLoad()
-                }, (err) => {
-                  // err
-                })
-
-            }
-          }
-        })
-      } else if (res.data.objects[0].userDefined == 'false' && res.data.objects[0].givenBook == 'true') {  //未加入自助计划且属于三本书计划
-        wx.showModal({
-          title: '加入自助计划',
-          content: '无法加入自助计划，此书已在每月3本书计划中',
-          showCancel:false
-        })
-      }
-    }, (err) => {
-      // err
-    })
-
-
+    app.findData(3974, 'CategoryID', CategoryID, this.updateDefined)
   },
+  //更新加入/不加入自助计划的数据
+  updateDefined: function (data, none, Product){
+    var that=this;
+    if (data[0].userDefined == 'true') { //已被加入自助计划
+      wx.showModal({
+        title: '从自助计划移除',
+        content: '移除后将不显示在今日阅读内',
+        success: function (result) {
+          if (result.confirm == true) {
+            //确认移除
+            app.updateData(data, Product, [{ 'userDefined': 'false' }], that.getBookList)
+          }
+        }
+      })
+    } else if (data[0].userDefined == 'false' && data[0].givenBook == 'false') { //未加入自助计划且不属于三本书计划
+      wx.showModal({
+        title: '加入自助计划',
+        content: '点击收藏，即可加入自助计划，显示在今日阅读中',
+        success: function (result) {
+          if (result.confirm == true) {
+            // 确认加入
+            app.updateData(data, Product, [{ 'userDefined': 'true' }], that.getBookList)
+          }
+        }
+      })
+    } else if (data[0].userDefined == 'false' && data[0].givenBook == 'true') {  //未加入自助计划且属于三本书计划  此处暂时保留
+      wx.showModal({
+        title: '加入自助计划',
+        content: '无法加入自助计划，此书已在每月3本书计划中',
+        showCancel: false
+      })
+    }
+  },
+  //显示全部
   showAll: function (e) {
     var type = e.currentTarget.dataset.type;
-    var that = this;
-    var Product = new wx.BaaS.TableObject(3974)
-    // 实例化查询对象
-    var query = new wx.BaaS.Query()
-    // 设置查询条件（比较、字符串包含、组合等）
-    query.contains('type', type)
-    Product.setQuery(query).find().then((res) => {
-      // success
-      console.log(res.data.objects)
-      var listName = 'booklist' + type;
-      that.setData({
-        [listName]: res.data.objects
-      })
-    }, (err) => {
-      // err
+    var listName = 'booklist' + type;
+    var dataArr = this.data[listName];  //拿到对于的书籍数据组
+    if (dataArr[1] == dataArr.pop()){ //已显示全部 现在要收起
+      dataArr.push(this.data.count)  //更新数组最后一个元素
+    }else{  //显示全部
+      dataArr.push(dataArr[1])  //更新数组最后一个元素
+    }
+    this.setData({
+      [listName]: dataArr
     })
+    console.log(this.data.count)
   },
   // 获取书籍列表
   getBookList:function(){
-    var that=this;
-    var count = that.data.count;  //初次加载时每一类别显示几本书 
-    var Product = new wx.BaaS.TableObject(3974)
-    for(var i=1;i<=2;i++){  //i值指 数据表里的type值
-      let index=i;  //临时保存type值
-      // 实例化查询对象
-      var query = new wx.BaaS.Query()
-      // 设置查询条件（比较、字符串包含、组合等）
-      query.contains('type', i.toString())
-      Product.setQuery(query).limit(count).find().then((res) => {
-        // success
-        console.log(res.data.objects)
-        console.log(index)
-        var listName = 'booklist'+index;
-        that.setData({
-          [listName]: res.data.objects,
-          dataLoadFinish: true
-        })
-      }, (err) => {
-        // err
-      })
+    for (var i = 1; i <= this.data.typeCount;i++){  //i值指 数据表里的type值 
+      //查询数据表的数据
+      app.findData(3974, 'type', i.toString(), this.handleBookList)
     }
+  },
+  //查询到书籍数据后的处理函数
+  handleBookList:function(data,conditionCon){
+    var listName = 'booklist' + conditionCon;
+    this.setData({
+      [listName]: [data, data.length,true,this.data.count]  //第一个元素指书籍列表 第二个元素指这类书籍的总数量 //第三个元素决定是否可以显示这类书籍,第四个元素是指 这类书籍应该显示几本书 默认每类显示指定的3本书
+    })
     wx.hideLoading()
   },
   /**
@@ -148,7 +105,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    this.getBookList();
+
   },
 
   /**

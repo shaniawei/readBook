@@ -1,0 +1,10 @@
+<!--pages/catalog/catalog.wxml-->
+<!--目录  -->
+<view class='cataLog' wx:if="{{ dataLoadFinish }}" >
+  <view class="item" wx:for="{{ chapterList }}" data-index='{{ index }}'>
+    <navigator url='../content/content?richTextID={{ item.id }}&index={{ index }}&catalog=true' open-type='redirect' hover-class='none'>
+      <text>第{{ index+1 }}章</text>
+      <text>{{ item.title }}</text>
+    </navigator>
+  </view>
+</view>
