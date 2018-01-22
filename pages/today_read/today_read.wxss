@@ -7,8 +7,18 @@
 .today_read_list .item navigator{
   height: 100%;
 }
+.today_read_list .item .bookname{
+  width: 35%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .today_read_list .item .info{
   font-size: 28rpx;
+  width: 65%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .today_read_list .item .info text:nth-child(1){
   color: blue;

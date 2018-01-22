@@ -12,17 +12,11 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    var that=this;
-    wx.getStorage({
-      key: 'chapterList',
-      success: function(res) {
-        console.log(JSON.parse(res.data))
-        that.setData({
-          chapterList: JSON.parse(res.data),
-          dataLoadFinish: true
-        })
-      },
-    })    
+    var chapterList=JSON.parse(wx.getStorageSync('chapterList'))
+    this.setData({
+      chapterList: chapterList,
+      dataLoadFinish: true
+    })   
   },
 
   /**

@@ -1,50 +1,28 @@
 // pages/user_defined/user_defined.js
+var app=getApp() //小程序实例
 Page({
-
   /**
-   * 页面的初始数据
+   * 页面的初始数据 
    */
   data: {
     
   },
-  //加入自助计划
+  //移除自助计划
   removeDefined: function (e) {
-    var that = this;
+    var that=this;
     var CategoryID = e.currentTarget.dataset.id;
     console.log(CategoryID)
-    //先查询被选中的书籍是否已经被加入自助计划
-    let Product = new wx.BaaS.TableObject(3974)
-    // 实例化查询对象
-    var query = new wx.BaaS.Query()
-    // 设置查询条件（比较、字符串包含、组合等）
-    query.contains('CategoryID', CategoryID)
-    Product.setQuery(query).find().then((res) => {
-      // success
-      console.log(res)
-      let product = Product.getWithoutData(res.data.objects[0].id)
+    app.findData(3974, 'CategoryID', CategoryID, function (data, none, Product){
       wx.showModal({
         title: '从自助计划移除',
         content: '移除后将不显示在今日阅读内',
-        success: function (data) {
-          if (data.confirm == true) {
-            //确认移除
-            product.set('userDefined', 'false')
-            product.update().then((res) => {
-              // success
-              console.log(res)
-              that.getBookList()
-            }, (err) => {
-              // err
-            })
-
+        success: function (result) {
+          if (result.confirm == true) { //确认移除
+            app.updateData(data, Product, [{ 'userDefined': 'false' }], that.getBookList)
           }
         }
       })
-    }, (err) => {
-      // err
     })
-
-
   },
   // 获取书籍列表
   getBookList: function () {

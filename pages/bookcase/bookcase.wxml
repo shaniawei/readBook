@@ -1,7 +1,7 @@
 
 <view class='bigTitle'>
   <text class="history {{ titleindex==1?'active':'' }}" bindtap='selectTitle' data-titleindex='1'>历史记录</text>
-  <text class="collect {{ titleindex==2?'active':'' }}" bindtap='selectTitle' data-titleindex='2'>收藏</text>
+  <text class="collect {{ titleindex==2?'active':'' }}" bindtap='selectTitle' data-titleindex='2'>收藏</text> 
 </view>
 
 <view wx:if='{{ titleindex=="1" }}'>

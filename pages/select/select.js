@@ -7,6 +7,9 @@ Page({
   data: {
     totlaScore:0,
     dataLoadFinish: false,
+    noSelect:false,
+    time: 0, //计算在页面待的时长 秒为单位
+    timer: undefined, //计时定时器
     date: new Date().getFullYear() + '-' + parseInt(new Date().getMonth() + 1) +'-'+new Date().getDate() //将做题时间保存在数据表
   },
   //提交
@@ -65,7 +68,9 @@ Page({
         }
       })
     }
-    
+    //记录阅读时间 以秒记
+    clearInterval(this.data.timer) //清楚计时器
+    console.log(this.data.time)
   },
   //单选处理函数
   radioChange: function (e) {
@@ -94,24 +99,37 @@ Page({
   //查询成功后进行的显示数据处理
   showSelectData:function(data){
     var that=this;
-    var path = data[0].path.cdn_path;  //文件路径
-    wx.request({
-      url: 'https://cloud-minapp-8044.cloud.ifanrusercontent.com/' + path,
-      header: {
-        'content-type': 'application/json'
-      },
-      success: function (res) {
-        console.log(res.data)
-        that.setData({
-          mcq: res.data.mcq, //多选
-          sc: res.data.sc,   //单选
-          dataLoadFinish: true      //条件渲染
-        })
-        wx.hideLoading()
-        console.log(that.data.mcq)
-        console.log(that.data.sc)
-      }
-    })
+    if(data.length!==0){
+      var path = data[0].path.cdn_path;  //文件路径
+      wx.request({
+        url: 'https://cloud-minapp-8044.cloud.ifanrusercontent.com/' + path,
+        header: {
+          'content-type': 'application/json'
+        },
+        success: function (res) {
+          console.log(res.data)
+          that.setData({
+            mcq: res.data.mcq, //多选
+            sc: res.data.sc,   //单选
+            dataLoadFinish: true      //条件渲染
+          })
+          wx.hideLoading()
+          console.log(that.data.mcq)
+          console.log(that.data.sc)
+
+          console.log(that.data.time)
+          that.data.timer = setInterval(function () {
+            that.data.time++;
+          }, 1000)
+        }
+      })
+    }else{
+      that.setData({
+        noSelect:true
+      })
+      wx.hideLoading()
+    }
+    
   },
   /**
    * 生命周期函数--监听页面加载
@@ -121,6 +139,7 @@ Page({
       title: '加载中',
     })
     var richTextID = options.richTextID  //章节id
+    console.log(richTextID)
     this.setData({
       richTextID: options.richTextID,
       CategoryID: options.CategoryID,

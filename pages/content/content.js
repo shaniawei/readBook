@@ -11,6 +11,8 @@ Page({
     dataLoadFinish:false,
     index:0,
     showSelect:false,
+    time:0, //计算在页面待的时长 秒为单位
+    timer:undefined, //计时定时器
     date: new Date().getFullYear() + '-' + parseInt(new Date().getMonth() + 1) + '-' + new Date().getDate()
   },
   //获取CategoryID类里的内容列表
@@ -23,10 +25,7 @@ Page({
       that.setData({
         chapterList: res.data.objects  //每本书的章节列表
       });
-      wx.setStorage({
-        key: 'chapterList',
-        data: JSON.stringify(that.data.chapterList),
-      })
+      wx.setStorageSync('chapterList', JSON.stringify(that.data.chapterList))
       that.getDetail(that.data.chapterList[that.data.index].id, that.data.index)
     }, (err) => {
       // err
@@ -59,6 +58,10 @@ Page({
         dataLoadFinish: true
       })
       wx.hideLoading()
+      console.log(that.data.time)
+      that.data.timer=setInterval(function(){
+        that.data.time++;
+      },1000)
     }, (err) => {
       // err
     });
@@ -67,10 +70,16 @@ Page({
   getonechapter:function(e){
     var flag = e.currentTarget.dataset.flag;       //获取上一章还是下一章的标志
     var nowIndex = e.currentTarget.dataset.index;  //现在看的是第几章
-    var newIndex
+    var newIndex;
+    var chapterList
+    if (this.data.catalog=='true'){
+      chapterList = JSON.parse(wx.getStorageSync('chapterList'))
+    }else{
+      chapterList = this.data.chapterList
+    }
     if (flag=='1'){  //下一章
       newIndex = nowIndex + 1;
-      if (newIndex >= this.data.chapterList.length) {
+      if (newIndex >= chapterList.length) {
         wx.showToast({
           title: '没有下一章',
           image: '',
@@ -89,7 +98,13 @@ Page({
         return
       }
     }
-    var newRichTextID = this.data.chapterList[newIndex].id;
+    this.setData({
+      dataLoadFinish: false
+    })
+    wx.showLoading({
+      title: '加载中',
+    })
+    var newRichTextID = chapterList[newIndex].id;
     this.getDetail(newRichTextID, newIndex);
     wx.pageScrollTo({
       scrollTop: 0,
@@ -104,7 +119,6 @@ Page({
       title: '加载中',
     })
     if (options.catalog=='true'){  //从目录点击进入
-      console.log(this.data.detail.richTextID)
       this.setData({
         catalog: options.catalog,
         showSelect: wx.getStorageSync('showSelect'),
@@ -185,7 +199,7 @@ Page({
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () {   //离开的时候看的是哪本书哪一章 记录下来
+  onUnload: function () {   //离开的时候看的是哪本书哪一章 记录下来 
     if (this.data.catalog=='true'){
       var isToday = wx.getStorageSync('isToday')
       var CategoryID = wx.getStorageSync('CategoryID') //书籍id
@@ -193,8 +207,9 @@ Page({
       var isToday = this.data.isToday
       var CategoryID = this.data.CategoryID //书籍id
     }
-    
-    var index = this.data.detail.index - 1  //正在阅读的章节索引
+    // var totalLength = this.data.chapterList.length || JSON.parse(wx.getStorageSync('chapterList')).length //这本书的总章节数
+    // var index = this.data.detail.index == totalLength ? Infinity : this.data.detail.index-1 //正在阅读的章节索引
+    var index = this.data.detail.index - 1 //正在阅读的章节索引
     console.log(index)
     if (isToday=='true'){  //阅读入口是 今日阅读
       if (wx.getStorageSync('showSelect') == false) {  //没有选择题的书籍离开记录
@@ -209,8 +224,10 @@ Page({
         //更新数据表里today_index和chapterName字段 保存阅读位置
         app.findData(3974, 'CategoryID', CategoryID, app.updateData, 'update',
           [{ 'today_index': index }, { 'chapterName': this.data.detail.title }])
-      }  
-      
+      }
+      //记录阅读时间 以秒记
+      clearInterval(this.data.timer) //清楚计时器
+      console.log(this.data.time)
     }else{ //阅读入口 书城
       //更新数据表里other_index字段 保存阅读位置
       console.log(CategoryID)

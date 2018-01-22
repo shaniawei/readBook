@@ -7,14 +7,6 @@ Page({
   data: {
     dataLoadFinish:false
   },
-  //查询成功后的数据处理函数
-  handleData:function(data){
-    this.setData({
-      booklist: data,
-      dataLoadFinish: true
-    })
-    wx.hideLoading()
-  },
   /**
    * 生命周期函数--监听页面加载
    */
@@ -22,12 +14,15 @@ Page({
     wx.showLoading({
       title: '加载中',
     })
-    this.setData({
-      booklist:[]
-    })
+    var that=this;
     //获取3本书计划 或者 自助计划 里的书籍列表
-    app.findData(3974, undefined, undefined, this.handleData, undefined, undefined, true, 
-    [{ 'givenBook': 'true' }, { 'userDefined': 'true' }], false)
+    app.findData(3974, undefined, undefined, function (data) {
+      that.setData({
+        booklist: data,
+        dataLoadFinish: true
+      })
+      wx.hideLoading()
+    }, undefined, undefined, true, [{ 'givenBook': 'true' }, { 'userDefined': 'true' }], false)
   },
 
   /**

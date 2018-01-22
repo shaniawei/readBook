@@ -13,6 +13,7 @@ Page({
    */
   data: {
     hasEmptyGrid: false,  //是否显示空白区域
+    dataLoadFinish:false,
     startDate:'2000-01-01',  //选择日期的开始时间
     endDate:'2020-01-01'     //选择日期的结束时间
   },
@@ -20,17 +21,27 @@ Page({
   //跳转至阅读历史流水中
   viewHistoryFall:function(e){
     var date = parseInt(e.currentTarget.dataset.idx)+1;  //被选中的是哪一天
+    var dategray = e.currentTarget.dataset.dategray
     var selectedTime = new Date(this.data.cur_year, this.data.cur_month-1, date);
     if (now_time >= selectedTime && selectedTime >= new Date(2017, 11, 21)){  //选择的是相对于当天过去的时间,包括当天
-      wx.navigateTo({
-        url: '../read_history/read_history?date=' + this.data.cur_year + '-' + this.data.cur_month + '-' + date,
-      })
+      if (dategray!==true){
+        wx.navigateTo({
+          url: '../read_history/read_history?date=' + this.data.cur_year + '-' + this.data.cur_month + '-' + date,
+        })
+      }else{
+        wx.showToast({
+          title: (date)+'号未读书',
+        })
+      }
     }
   },
     /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function () {
+    wx.showLoading({
+      title: '加载中',
+    })
     this.calculateEmptyGrids(now_year, now_month);
     this.calculateDays(now_year, now_month);
     this.setData({
@@ -78,11 +89,13 @@ Page({
       }
     }
     this.setData({
-      days
+      days,
+      dataLoadFinish:true
     })
+    wx.hideLoading()
   },
   getThisMonthDays(year, month) {
-    return new Date(year, month, 0).getDate(); //这里的month是当前准确的month 返回当前的天数
+    return new Date(year, month, 0).getDate(); //这里的month是当前准确的month 返回当月的天数
   },
   getFirstDayOfWeek(year, month) {
     return new Date(year, month-1, 1).getDay();  //返回某年某月第一天是星期几  返回的是数字 比如5代表星期五  这里的month需要减1才可以获得当月第一天准确的星期
@@ -108,10 +121,8 @@ Page({
   },
   //计算一个月有多少天
   calculateDays(year, month) {
-    let days = [];
-
+    var days = [];
     const thisMonthDays = this.getThisMonthDays(year, month);  
-
     for (let i = 1; i <= thisMonthDays; i++) {
       days.push({
         day: i,
@@ -127,51 +138,47 @@ Page({
   },
   //上一个月 下一个月
   handleCalendar(e) {
+    // wx.showLoading({
+    //   title: '加载中',
+    // })
     const handle = e.currentTarget.dataset.handle;
     const cur_year = this.data.cur_year;
     const cur_month = this.data.cur_month;
+    var newMonth, newYear;
     if (handle == 'prev') {  //往右 上个月
-      let newMonth = cur_month - 1;
-      let newYear = cur_year;
+      newMonth = cur_month - 1;
+      newYear = cur_year;
       if (newMonth < 1) {
         newYear = cur_year - 1;
         newMonth = 12;
       }
-
-      this.calculateDays(newYear, newMonth);
-      this.calculateEmptyGrids(newYear, newMonth);
-
-      this.setData({
-        cur_year: newYear,
-        cur_month: newMonth
-      });
-      this.judgeToday();
-      this.judgeDate()
-
     } else {  //往左  下个月
-      let newMonth = cur_month + 1;
-      let newYear = cur_year;
+      newMonth = cur_month + 1;
+      newYear = cur_year;
       if (newMonth > 12) {
         newYear = cur_year + 1;
         newMonth = 1;
       }
-
-      this.calculateDays(newYear, newMonth);
-      this.calculateEmptyGrids(newYear, newMonth);
-
-      this.setData({
-        cur_year: newYear,
-        cur_month: newMonth
-      });
-      this.judgeToday();
-      this.judgeDate()
     }
+    this.calculateDays(newYear, newMonth);
+    this.calculateEmptyGrids(newYear, newMonth);
+
+    this.setData({
+      cur_year: newYear,
+      cur_month: newMonth
+    });
+    this.judgeToday();
+    this.judgeDate()
+    // wx.hideLoading()
   },
   //选择年月
   bindDateChange: function (e) {
+    console.log('picker发送选择改变，携带值为', e.detail.value)
+    // wx.showLoading({
+    //   title: '加载中',
+    // })
     var new_year = parseInt(e.detail.value.slice(0, 4));
     var new_month = parseInt(e.detail.value.slice(5))
-    console.log('picker发送选择改变，携带值为', e.detail.value)
     this.calculateDays(new_year, new_month);
     this.calculateEmptyGrids(new_year, new_month);
     this.setData({
@@ -180,6 +187,7 @@ Page({
     })
     this.judgeToday();
     this.judgeDate()
+    // wx.hideLoading()
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

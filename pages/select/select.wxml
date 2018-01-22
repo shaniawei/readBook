@@ -40,3 +40,6 @@
   </view>
   <button type='primary' class='apply-btn' bindtap='applyBtn'>提交</button>
 </view>
+<view wx:if='{{ noSelect }}'>
+  没有对应的选择题
+</view>

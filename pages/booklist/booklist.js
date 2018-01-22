@@ -5,7 +5,7 @@ Page({
    */
   data: {
     count:3,  //初次加载时显示3本书
-    typeCount:3 //书籍分类的代表数字 这里指的是最大的代表数字
+    typeCount:2 //书籍分类的代表数字 这里指的是最大的代表数字
   },
   //加入自助计划
   addDefined: function (e) {
@@ -64,18 +64,17 @@ Page({
   },
   // 获取书籍列表
   getBookList:function(){
+    var that=this
     for (var i = 1; i <= this.data.typeCount;i++){  //i值指 数据表里的type值 
       //查询数据表的数据
-      app.findData(3974, 'type', i.toString(), this.handleBookList)
+      app.findData(3974, 'type', i.toString(), function (data, conditionCon) {
+        var listName = 'booklist' + conditionCon;
+        that.setData({
+          [listName]: [data, data.length, true, that.data.count]  //第一个元素指书籍列表 第二个元素指这类书籍的总数量 //第三个元素决定是否可以显示这类书籍,第四个元素是指 这类书籍应该显示几本书 默认每类显示指定的3本书
+        })
+        wx.hideLoading()
+      })
     }
-  },
-  //查询到书籍数据后的处理函数
-  handleBookList:function(data,conditionCon){
-    var listName = 'booklist' + conditionCon;
-    this.setData({
-      [listName]: [data, data.length,true,this.data.count]  //第一个元素指书籍列表 第二个元素指这类书籍的总数量 //第三个元素决定是否可以显示这类书籍,第四个元素是指 这类书籍应该显示几本书 默认每类显示指定的3本书
-    })
-    wx.hideLoading()
   },
   /**
    * 生命周期函数--监听页面加载
@@ -105,7 +104,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    this.getBookList()
   },
 
   /**

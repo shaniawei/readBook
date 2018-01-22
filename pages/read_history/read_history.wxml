@@ -1,6 +1,7 @@
 <!--pages/read_history/read_history.wxml-->
 
-<view wx:if="{{ historyFall }}">
+<view wx:if="{{ dataLoadFinish }}">
+  <view class='history_title'>{{ date }}阅读历史</view>
   <view class='book-name'>
     <view wx:for="{{ bookNameList }}" class='item {{ currentType==index+1?"active":"" }}' data-type='{{ index+1 }}' data-bookname='{{ item }}' bindtap='showChapter'>
       {{ item }}
@@ -13,9 +14,5 @@
     </view>
   </view>
   <view style='clear:both;'></view>
-</view>
-
-<view wx:else>
-  {{ date }}没有阅读记录
 </view>
 

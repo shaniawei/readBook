@@ -6,6 +6,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    dataLoadFinish:false,
     currentType:'1' //判断选择的是那本书，加上active类
   },
   //显示书籍对应的章节
@@ -18,33 +19,36 @@ Page({
     })
     console.log(chapterType,bookname)
   },
-  //查询成功后所做的处理
-  handleData:function(data){
-    var that=this;
-    var bookNameList = []; //书籍名称列表
-    if (data && data.length !== 0) {
-      for (var i = 0; i < data.length; i++) {
-        bookNameList.push(data[i].bookName);
-      }
-      bookNameList = Array.from(new Set(bookNameList))
-      console.log(bookNameList)
-      that.setData({
-        historyFall: data,
-        bookNameList: bookNameList,
-        currentBookName: bookNameList[0]
-      })
-    }
-  },
     /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.showLoading({
+      title: '加载中',
+    })
+    var that = this;
     var date=options.date; //获取用户选择的时间
     console.log(date) 
-    this.setData({
+    that.setData({
       date
     })
-    app.findData(22303,'date',date,this.handleData)
+    app.findData(22303, 'date', date, function (data) {
+      var bookNameList = []; //书籍名称列表
+      if (data && data.length !== 0) {
+        for (var i = 0; i < data.length; i++) {
+          bookNameList.push(data[i].bookName);
+        }
+        bookNameList = Array.from(new Set(bookNameList)) //去重
+        console.log(bookNameList)
+        that.setData({
+          historyFall: data,
+          bookNameList: bookNameList,
+          currentBookName: bookNameList[0],
+          dataLoadFinish:true
+        })
+        wx.hideLoading()
+      }
+    })
   },
 
   /**

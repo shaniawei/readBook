@@ -1,69 +1,71 @@
 <!--
-未实现：
-1.完成任务的日期标绿色，未完成的标灰色
-2.进入阅读历史流水页面的显示 （左边书名导航栏，右边显示对应的章节列表）
+功能：
+1.阅读了今日阅读内容 日期标为绿色，未阅读今日阅读内容的日期标为灰色
+2.点击日期可进入阅读历史流水页面的显示 （左边书名导航栏，右边显示对应的章节列表） 未来的日期不可点击 使用这个小程序之前的日期不可点击 未读书的日期不可点击
   -->
-
-<view class='cue clearfix'>
-  <view class='item fl-r'>
-    <text class='markColor m1'></text>
-    <text class='txt'>未读</text>
-  </view>
-  <view class='item fl-r'>
-    <text class='markColor m3'></text>
-    <text class='txt'>今日</text>
-  </view>
-  <view class='item fl-r'>
-    <text class='markColor m2'></text>
-    <text class='txt'>已读</text>
-  </view>
-</view>
-<!--日历start  -->
-<view class="flex box box-tb box-align-center">
-  <view class="calendar pink-color box box-tb">
-        <view class="top-handle fs28 box box-lr box-align-center box-pack-center">
-            <!--上一月  -->
-            <view class="prev box box-rl" bindtap="handleCalendar" data-handle="prev">
-                <view class="prev-handle box box-lr box-align-center box-pack-center">《</view>
-            </view>
-
-            <!--当前年月份  -->
-            <picker class="date-area box box-lr box-align-center box-pack-center" mode="date" start="{{ startDate }}" end="{{ endDate }}" fields="month" value="{{ cur_year }}-{{ cur_month }}" bindchange="bindDateChange">
-                <view class="picker">{{cur_year || "--"}} 年 {{cur_month || "--"}} 月</view>
-            </picker>
-
-            <!--下一月  -->
-            <view class="next box box-lr" bindtap="handleCalendar" data-handle="next">
-                <view class="next-handle box box-lr box-align-center box-pack-center">》</view>
-            </view>
-
-        </view>
-
-        <!--星期  -->
-        <view class="weeks box box-lr box-pack-center box-align-center">
-            <view class="flex week fs28 box-margin-bottom" wx:for="{{weeks_ch}}" wx:key="{{index}}" data-idx="{{index}}">{{item}}</view>
-        </view>
-
-        <view class="days box box-lr box-wrap">
-
-            <view wx:if="{{hasEmptyGrid}}" class="grid white-color box box-align-center box-pack-center" wx:for="{{empytGrids}}" wx:key="{{index}}" data-idx="{{index}}">
-            </view>
-
-            <view class="grid white-color box box-align-center box-pack-center box-margin-bottom" wx:for="{{days}}" wx:key="{{index}}" 
-            data-idx="{{index}}" bindtap='viewHistoryFall'>
-                <view class="day {{item.dateblue ? 'border-radius pink-bg' : ''}} {{ item.dategreen?'border-radius m2': '' }} {{ item.dategray?'border-radius m1': '' }} box box-align-center box-pack-center">{{item.day}}                     </view>
-            </view>
-
-        </view>
+<view wx:if='{{ dataLoadFinish }}'>
+  <view class='cue clearfix'>
+    <view class='item fl-r'>
+      <text class='markColor m1'></text>
+      <text class='txt'>未读</text>
     </view>
+    <view class='item fl-r'>
+      <text class='markColor m3'></text>
+      <text class='txt'>今日</text>
+    </view>
+    <view class='item fl-r'>
+      <text class='markColor m2'></text>
+      <text class='txt'>已读</text>
+    </view>
+  </view>
+  <!--日历start  -->
+  <view class="flex box box-tb box-align-center">
+    <view class="calendar pink-color box box-tb">
+          <view class="top-handle fs28 box box-lr box-align-center box-pack-center">
+              <!--上一月  -->
+              <view class="prev box box-rl" bindtap="handleCalendar" data-handle="prev">
+                  <view class="prev-handle box box-lr box-align-center box-pack-center">《</view>
+              </view>
+
+              <!--当前年月份  -->
+              <picker class="date-area box box-lr box-align-center box-pack-center" mode="date" start="{{ startDate }}" end="{{ endDate }}" fields="month" value="{{ cur_year }}-{{ cur_month }}" bindchange="bindDateChange">
+                  <view class="picker">{{cur_year || "--"}} 年 {{cur_month || "--"}} 月</view>
+              </picker>
+
+              <!--下一月  -->
+              <view class="next box box-lr" bindtap="handleCalendar" data-handle="next">
+                  <view class="next-handle box box-lr box-align-center box-pack-center">》</view>
+              </view>
+
+          </view>
+
+          <!--星期  -->
+          <view class="weeks box box-lr box-pack-center box-align-center">
+              <view class="flex week fs28 box-margin-bottom" wx:for="{{weeks_ch}}" wx:key="{{index}}" data-idx="{{index}}">{{item}}</view>
+          </view>
+
+          <view class="days box box-lr box-wrap">
+
+              <view wx:if="{{hasEmptyGrid}}" class="grid white-color box box-align-center box-pack-center" wx:for="{{empytGrids}}" wx:key="{{index}}" data-idx="{{index}}">
+              </view>
+
+              <view class="grid white-color box box-align-center box-pack-center box-margin-bottom" wx:for="{{days}}" wx:key="{{index}}" 
+              data-idx="{{index}}" data-dategray="{{ item.dategray }}" bindtap='viewHistoryFall'>
+                  <view class="day {{item.dateblue ? 'border-radius pink-bg' : ''}} {{ item.dategreen?'border-radius m2': '' }} {{ item.dategray?'border-radius m1': '' }} box box-align-center box-pack-center">{{item.day}}                     </view>
+              </view>
+
+          </view>
+      </view>
+  </view>
+  <!--日历end  -->
+
+  <navigator open-type='navigate' url='../study_plan/study_plan' hover-class='none'>
+    <button type='primary' class='typeSelect'>我的学习计划</button>
+  </navigator>
+
+  <navigator open-type='navigate' url='../today_read/today_read' hover-class='none'>
+    <button type='primary' class='typeSelect'>今日阅读内容</button>
+  </navigator>
 </view>
-<!--日历end  -->
 
-<navigator open-type='navigate' url='../study_plan/study_plan' hover-class='none'>
-  <button type='primary' class='typeSelect'>我的学习计划</button>
-</navigator>
-
-<navigator open-type='navigate' url='../today_read/today_read' hover-class='none'>
-  <button type='primary' class='typeSelect'>今日阅读内容</button>
-</navigator>
 

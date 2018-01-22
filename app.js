@@ -36,6 +36,9 @@ App({
       if (Object.prototype.toString.call(conditionCon).slice(8, -1) =='RegExp'){  //正则表达式
         // 设置查询条件（比较、字符串包含、组合等）
         query.matches(condition, conditionCon)
+      } else if (conditionCon==null){
+        // 设置查询条件（比较、字符串包含、组合等）
+        query.isNotNull(condition)
       }else{
         // 设置查询条件（比较、字符串包含、组合等）
         query.contains(condition, conditionCon)
