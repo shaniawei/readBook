@@ -80,16 +80,19 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    wx.showLoading({
-      title: '加载中',
-    })
     var that=this;
-    wx.getUserInfo({
-      success: function (res) {
-        console.log(res.userInfo)
-        
-        that.getBookList();
-      }
+    // 微信用户登录小程序
+    wx.BaaS.login().then((res) => {
+      // 用户允许授权，res 包含用户完整信息
+      console.log(res)
+      wx.showLoading({
+        title: '加载中',
+      })
+      that.getBookList();
+
+    }, (res) => {
+      // 用户拒绝授权
+      console.log(res)
     })
   },
 
@@ -104,7 +107,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    this.getBookList()
+    // this.getBookList()
   },
 
   /**
@@ -125,7 +128,8 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
-    
+    this.getBookList()
+    wx.stopPullDownRefresh()
   },
 
   /**

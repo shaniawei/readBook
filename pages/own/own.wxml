@@ -50,7 +50,7 @@
               </view>
 
               <view class="grid white-color box box-align-center box-pack-center box-margin-bottom" wx:for="{{days}}" wx:key="{{index}}" 
-              data-idx="{{index}}" data-dategray="{{ item.dategray }}" bindtap='viewHistoryFall'>
+              data-idx="{{index}}"  data-dategreen="{{ item.dategreen }}" bindtap='viewHistoryFall'>
                   <view class="day {{item.dateblue ? 'border-radius pink-bg' : ''}} {{ item.dategreen?'border-radius m2': '' }} {{ item.dategray?'border-radius m1': '' }} box box-align-center box-pack-center">{{item.day}}                     </view>
               </view>
 

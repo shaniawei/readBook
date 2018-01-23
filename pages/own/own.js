@@ -21,14 +21,14 @@ Page({
   //跳转至阅读历史流水中
   viewHistoryFall:function(e){
     var date = parseInt(e.currentTarget.dataset.idx)+1;  //被选中的是哪一天
-    var dategray = e.currentTarget.dataset.dategray
+    var dategreen = e.currentTarget.dataset.dategreen
     var selectedTime = new Date(this.data.cur_year, this.data.cur_month-1, date);
     if (now_time >= selectedTime && selectedTime >= new Date(2017, 11, 21)){  //选择的是相对于当天过去的时间,包括当天
-      if (dategray!==true){
+      if (dategreen == true ){
         wx.navigateTo({
           url: '../read_history/read_history?date=' + this.data.cur_year + '-' + this.data.cur_month + '-' + date,
         })
-      }else{
+      } else{
         wx.showToast({
           title: (date)+'号未读书',
         })
